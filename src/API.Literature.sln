@@ -5,13 +5,13 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CFC2FB12-89F7-49B0-ADCE-8AFF68CCDB9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Literature.API", "src\API.Literature.API\API.Literature.API.csproj", "{E6551AD6-3F7A-4DF4-9793-D9D87D95E5AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Literature.API", "API.Literature.API\API.Literature.API.csproj", "{E6551AD6-3F7A-4DF4-9793-D9D87D95E5AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Literature.Core", "src\API.Literature.Core\API.Literature.Core.csproj", "{358D9589-CDA7-49E8-9F8B-B8EF27483709}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Literature.Core", "API.Literature.Core\API.Literature.Core.csproj", "{358D9589-CDA7-49E8-9F8B-B8EF27483709}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Literature.Infrastructure", "src\API.Literature.Infrastructure\API.Literature.Infrastructure.csproj", "{BCE2CD28-E768-4E46-B0AB-6FAA73E8C252}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Literature.Infrastructure", "API.Literature.Infrastructure\API.Literature.Infrastructure.csproj", "{BCE2CD28-E768-4E46-B0AB-6FAA73E8C252}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Irrbloss", "src\Irrbloss\Irrbloss.csproj", "{2C1CA558-34C5-4878-A3E3-F3558350194C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Irrbloss", "Irrbloss\Irrbloss.csproj", "{2C1CA558-34C5-4878-A3E3-F3558350194C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
