@@ -20,7 +20,7 @@ public class LiteratureService : ILiteratureService
     public LiteratureTime GetLiteratureTime(long milliseconds)
     {
         var dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(milliseconds);
-        var key = $"{dateTimeOffset.Hour}:{dateTimeOffset.Minute}";
+        var key = $"{dateTimeOffset.Hour:D2}:{dateTimeOffset.Minute:D2}";
         var entry = _cache.Get<List<LiteratureTime>>(key);
 
         return entry.First();
