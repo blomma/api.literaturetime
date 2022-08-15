@@ -54,7 +54,7 @@ using (var scope = app.Services.CreateScope())
 
 app.MapRouterModules();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseCors(MyAllowSpecificOrigins);
 
 app.Run();
