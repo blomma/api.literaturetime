@@ -14,19 +14,19 @@ builder.Services.AddRouterModules();
 
 builder.Services.AddMemoryCache();
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy =>
-                      {
-                          policy
-                            // .WithOrigins("https://localhost:44472")
-                            .AllowAnyHeader()
-                            .AllowAnyMethod()
-                            .AllowAnyOrigin();
-                      });
-});
+// var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+// builder.Services.AddCors(options =>
+// {
+//     options.AddPolicy(name: MyAllowSpecificOrigins,
+//                       policy =>
+//                       {
+//                           policy
+//                             // .WithOrigins("https://localhost:44472")
+//                             .AllowAnyHeader()
+//                             .AllowAnyMethod()
+//                             .AllowAnyOrigin();
+//                       });
+// });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -55,6 +55,6 @@ using (var scope = app.Services.CreateScope())
 app.MapRouterModules();
 
 // app.UseHttpsRedirection();
-app.UseCors(MyAllowSpecificOrigins);
+// app.UseCors(MyAllowSpecificOrigins);
 
 app.Run();
