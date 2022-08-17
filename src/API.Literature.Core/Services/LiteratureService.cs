@@ -5,6 +5,8 @@ using API.Literature.Core.Interfaces;
 using API.Literature.Core.Models;
 using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
+using Api.Literature.Core.Exceptions;
+using System.Net;
 
 public class LiteratureService : ILiteratureService
 {
@@ -21,9 +23,15 @@ public class LiteratureService : ILiteratureService
     {
         var dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(milliseconds);
         var key = $"{dateTimeOffset.Hour:D2}:{dateTimeOffset.Minute:D2}";
-        var entry = _cache.Get<List<LiteratureTime>>(key);
+        var entries = _cache
+            .Get<List<LiteratureTime>>(key);
 
-        return entry.First();
+        if (entries == null || entries.Count == 0)
+        {
+            throw new ManagedresponseException(HttpStatusCode.NotFound, $"The specified timestamp {milliseconds} was not found");
+        }
+
+        return entries.First();
     }
 
     public List<LiteratureTime> GetLiteratureTimes()

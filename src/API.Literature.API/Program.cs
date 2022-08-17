@@ -1,3 +1,4 @@
+using Api.Literature.Api.Middlewares;
 using API.Literature.Core.Interfaces;
 using Irrbloss.Extensions;
 using Microsoft.Extensions.Caching.Memory;
@@ -6,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddMvc();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -13,20 +16,8 @@ builder.Services.AddServiceModules();
 builder.Services.AddRouterModules();
 
 builder.Services.AddMemoryCache();
+builder.Services.AddManagedResponseException();
 
-// var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-// builder.Services.AddCors(options =>
-// {
-//     options.AddPolicy(name: MyAllowSpecificOrigins,
-//                       policy =>
-//                       {
-//                           policy
-//                             // .WithOrigins("https://localhost:44472")
-//                             .AllowAnyHeader()
-//                             .AllowAnyMethod()
-//                             .AllowAnyOrigin();
-//                       });
-// });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -52,9 +43,9 @@ using (var scope = app.Services.CreateScope())
 }
 // END POPULATION
 
+app.UseManagedResponseException();
 app.MapRouterModules();
 
 // app.UseHttpsRedirection();
-// app.UseCors(MyAllowSpecificOrigins);
 
 app.Run();
