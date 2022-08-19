@@ -40,11 +40,11 @@ public class LiteratureService : ILiteratureService
         return result.Select(r =>
         {
             var a = r.Split("|");
-            var time = a[0];
-            var literatureTime = a[1];
-            var quote = a[2];
-            var title = a[3];
-            var author = a[4];
+            var time = a[0].Trim();
+            var literatureTime = a[1].Trim();
+            var quote = a[2].Trim();
+            var title = a[3].Trim();
+            var author = a[4].Trim();
 
             var qi = quote.ToLowerInvariant().IndexOf(literatureTime.ToLowerInvariant());
             var quoteFirst = qi > 0 ? quote[..qi] : "";
