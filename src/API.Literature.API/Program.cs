@@ -35,6 +35,13 @@ builder.Services.AddManagedResponseException();
 builder.Services.AddHttpLogging(logging =>
 {
     logging.RequestHeaders.Add("Referer");
+    logging.RequestHeaders.Add("X-Forwarded-For");
+    logging.RequestHeaders.Add("X-Forwarded-Host");
+    logging.RequestHeaders.Add("X-Forwarded-Port");
+    logging.RequestHeaders.Add("X-Forwarded-Proto");
+    logging.RequestHeaders.Add("X-Forwarded-Server");
+    logging.RequestHeaders.Add("X-Real-Ip");
+    logging.RequestHeaders.Add("Upgrade-Insecure-Requests");
     logging.LoggingFields = HttpLoggingFields.All;
     logging.RequestBodyLogLimit = 4096;
     logging.ResponseBodyLogLimit = 4096;
