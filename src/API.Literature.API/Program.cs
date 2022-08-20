@@ -1,9 +1,23 @@
 using Api.Literature.Api.Middlewares;
 using API.Literature.Core.Interfaces;
 using Irrbloss.Extensions;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Extensions.Caching.Memory;
+using Serilog;
+using Serilog.Events;
+
+Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .CreateBootstrapLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog((context, services, configuration) =>
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -18,7 +32,16 @@ builder.Services.AddRouterModules();
 builder.Services.AddMemoryCache();
 builder.Services.AddManagedResponseException();
 
+builder.Services.AddHttpLogging(logging =>
+{
+    logging.RequestHeaders.Add("Referer");
+    logging.LoggingFields = HttpLoggingFields.All;
+    logging.RequestBodyLogLimit = 4096;
+    logging.ResponseBodyLogLimit = 4096;
+});
+
 var app = builder.Build();
+app.UseHttpLogging();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
