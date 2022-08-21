@@ -28,7 +28,7 @@ public class LiteratureService : ILiteratureService
 
         if (entries == null || entries.Count == 0)
         {
-            throw new ManagedresponseException(HttpStatusCode.NotFound, $"The specified timestamp {milliseconds} was not found");
+            throw new ManagedresponseException(HttpStatusCode.NotFound, $"The specified timestamp {milliseconds} was not found, key:{key}");
         }
 
         return entries.First();

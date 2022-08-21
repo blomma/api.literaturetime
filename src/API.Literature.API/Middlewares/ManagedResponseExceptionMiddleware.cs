@@ -81,8 +81,10 @@ public class ManagedResponseExceptionMiddleware
                 error as ManagedresponseException
                 ?? new ManagedresponseException(error);
 
+            var problemDetails = managedException.ProblemDetails;
+            problemDetails.Extensions.Add("StackTrace", managedException.StackTrace);
 
-            await WriteProblemDetails(context, managedException.ProblemDetails);
+            await WriteProblemDetails(context, problemDetails);
         }
     }
 

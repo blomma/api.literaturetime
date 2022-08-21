@@ -19,23 +19,18 @@ public class ManagedresponseException : Exception
             Status = StatusCodes.Status500InternalServerError,
             Detail = exception.Message
         };
-        problemDetails.Extensions.Add("StackTrace", exception.ToString());
 
         ProblemDetails = problemDetails;
     }
 
-    public ManagedresponseException(HttpStatusCode statusCode, string message, Exception? exception = null)
+    public ManagedresponseException(HttpStatusCode statusCode, string message)
     {
         var problemDetails = new ProblemDetails
         {
-            Title = Message,
+            Title = message,
             Status = (int)statusCode,
-            Detail = exception?.Message ?? message
+            Detail = message
         };
-        if (exception != null)
-        {
-            problemDetails.Extensions.Add("StackTrace", exception.ToString());
-        }
 
         ProblemDetails = problemDetails;
     }
