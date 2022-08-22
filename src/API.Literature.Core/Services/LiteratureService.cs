@@ -21,19 +21,49 @@ public class LiteratureService : ILiteratureService
         _cache = cache;
     }
 
-    public LiteratureTime GetLiteratureTime(string hourMinute)
+    public LiteratureTime GetRandomLiteratureTime(string hour, string minute)
     {
-        ReadOnlySpan<char> hourMinuteSpan = hourMinute;
-        var key = $"{hourMinuteSpan[..2]}:{hourMinuteSpan[2..]}";
+        if (hour.Length != 2 || minute.Length != 2)
+        {
+            throw new ManagedresponseException(HttpStatusCode.BadRequest, $"The specified hour:{hour} and minute:{minute} was in the wrong format, both hour and minute needs to be padded with 0 for a length of 2");
+        }
+
+        var key = $"{hour}:{minute}";
         var entries = _cache
             .Get<List<LiteratureTime>>(key);
 
         if (entries == null || entries.Count == 0)
         {
-            throw new ManagedresponseException(HttpStatusCode.NotFound, $"The specified hour and minute {hourMinute} was not found, key:{key}");
+            throw new ManagedresponseException(HttpStatusCode.NotFound, $"The specified hour:{hour} and minute:{minute} was not found, key:{key}");
         }
 
-        return entries.First();
+        int index = new Random().Next(entries.Count);
+        return entries[index];
+    }
+
+    public LiteratureTime GetLiteratureTime(string hour, string minute, string hash)
+    {
+        if (hour.Length != 2 || minute.Length != 2)
+        {
+            throw new ManagedresponseException(HttpStatusCode.BadRequest, $"The specified hour:{hour} and minute:{minute} was in the wrong format, both hour and minute needs to be padded with 0 for a length of 2");
+        }
+
+        var key = $"{hour}:{minute}";
+        var entries = _cache
+            .Get<List<LiteratureTime>>(key);
+
+        if (entries == null || entries.Count == 0)
+        {
+            throw new ManagedresponseException(HttpStatusCode.NotFound, $"The specified hour:{hour} and minute:{minute} was not found, key:{key}");
+        }
+
+        var entry = entries.Find(e => e.Hash == hash);
+        if (entry == null)
+        {
+            throw new ManagedresponseException(HttpStatusCode.NotFound, $"The specified hour:{hour}, minute:{minute} and hash:{hash} was not found, key:{key}");
+        }
+
+        return entry;
     }
 
     public List<LiteratureTime> GetLiteratureTimes()
