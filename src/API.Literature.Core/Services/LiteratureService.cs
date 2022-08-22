@@ -7,6 +7,8 @@ using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
 using Api.Literature.Core.Exceptions;
 using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 
 public class LiteratureService : ILiteratureService
 {
@@ -19,16 +21,16 @@ public class LiteratureService : ILiteratureService
         _cache = cache;
     }
 
-    public LiteratureTime GetLiteratureTime(long milliseconds)
+    public LiteratureTime GetLiteratureTime(string hourMinute)
     {
-        var dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(milliseconds);
-        var key = $"{dateTimeOffset.Hour:D2}:{dateTimeOffset.Minute:D2}";
+        ReadOnlySpan<char> hourMinuteSpan = hourMinute;
+        var key = $"{hourMinuteSpan[..2]}:{hourMinuteSpan[2..]}";
         var entries = _cache
             .Get<List<LiteratureTime>>(key);
 
         if (entries == null || entries.Count == 0)
         {
-            throw new ManagedresponseException(HttpStatusCode.NotFound, $"The specified timestamp {milliseconds} was not found, key:{key}");
+            throw new ManagedresponseException(HttpStatusCode.NotFound, $"The specified hour and minute {hourMinute} was not found, key:{key}");
         }
 
         return entries.First();
@@ -37,6 +39,8 @@ public class LiteratureService : ILiteratureService
     public List<LiteratureTime> GetLiteratureTimes()
     {
         var result = _literatureProvider.GetLiteratureTimes();
+        using SHA256 sha256Hash = SHA256.Create();
+
         return result.Select(r =>
         {
             var a = r.Split("|");
@@ -46,12 +50,28 @@ public class LiteratureService : ILiteratureService
             var title = a[3].Trim();
             var author = a[4].Trim();
 
+            var hash = GetHash(sha256Hash, $"{time}{literatureTime}{quote}{title}{author}");
+
             var qi = quote.ToLowerInvariant().IndexOf(literatureTime.ToLowerInvariant());
             var quoteFirst = qi > 0 ? quote[..qi] : "";
             var quoteTime = quote[qi..(qi + literatureTime.Length)];
             var quoteLast = quote[(qi + literatureTime.Length)..];
 
-            return new LiteratureTime(time, quoteFirst, quoteTime, quoteLast, title, author);
+            return new LiteratureTime(time, quoteFirst, quoteTime, quoteLast, title, author, hash);
         }).ToList();
+    }
+
+    private static string GetHash(HashAlgorithm hashAlgorithm, string input)
+    {
+        byte[] data = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+        var stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < data.Length; i++)
+        {
+            stringBuilder.Append(data[i].ToString("x2"));
+        }
+
+        return stringBuilder.ToString();
     }
 }

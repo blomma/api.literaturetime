@@ -4,6 +4,6 @@ using API.Literature.Core.Models;
 
 public interface ILiteratureService
 {
-    public LiteratureTime GetLiteratureTime(long milliseconds);
+    public LiteratureTime GetLiteratureTime(string hourMinute);
     public List<LiteratureTime> GetLiteratureTimes();
 }

@@ -8,9 +8,9 @@ public class LiteratureRouterModule : IRouterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/1.0/literature/{milliseconds:long}", ([FromServices] ILiteratureService literatureService, long milliseconds) =>
+        app.MapGet("/api/1.0/literature/{hourminute}", ([FromServices] ILiteratureService literatureService, string hourminute) =>
         {
-            return literatureService.GetLiteratureTime(milliseconds);
+            return literatureService.GetLiteratureTime(hourminute);
         })
         .WithName("GetLiteratureTime");
 
