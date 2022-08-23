@@ -15,10 +15,10 @@ spec:
         - name: api-literature
           image: ghcr.io/blomma/api.literature:main
           ports:
-            - containerPort: 80
+            - containerPort: 443
           env:
             - name: ASPNETCORE_URLS
-              value: http://*:80
+              value: https://*:443
           imagePullPolicy: Always
   selector:
     matchLabels:
@@ -32,8 +32,8 @@ metadata:
 
 spec:
   ports:
-    - name: http
-      port: 80
+    - name: https
+      port: 443
   selector:
     app: api-literature
 
@@ -47,7 +47,8 @@ metadata:
 
 spec:
   rules:
-    - http:
+    - host: api-literature.192.168.1.11.nip.io
+      http:
         paths:
           - path: /api/1.0/literature
             pathType: Prefix
@@ -55,4 +56,4 @@ spec:
               service:
                 name: api-literature
                 port:
-                  number: 80
+                  number: 443
