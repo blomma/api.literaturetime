@@ -1,8 +1,15 @@
 ---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: literature
+
+---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: api-literature
+  namespace: literature
 
 spec:
   replicas: 2
@@ -29,6 +36,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: api-literature
+  namespace: literature
 
 spec:
   ports:
@@ -38,22 +46,18 @@ spec:
     app: api-literature
 
 ---
-kind: Ingress
-apiVersion: networking.k8s.io/v1
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
   name: api-literature
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web
+  namespace: literature
 
 spec:
-  rules:
-    - host: api-literature.192.168.1.11.nip.io
-      http:
-        paths:
-          - path: /api/1.0/literature
-            pathType: Prefix
-            backend:
-              service:
-                name: api-literature
-                port:
-                  number: 80
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`api-literature.192.168.1.11.nip.io`) && PathPrefix(`/api/1.0/literature`)
+      kind: Rule
+      services:
+        - name: api-literature
+          port: http
