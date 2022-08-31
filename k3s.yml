@@ -8,7 +8,7 @@ metadata:
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: api-literature
+  name: api-literaturetime
   namespace: literature
 
 spec:
@@ -16,10 +16,10 @@ spec:
   template:
     metadata:
       labels:
-        app: api-literature
+        app: api-literaturetime
     spec:
       containers:
-        - name: api-literature
+        - name: api-literaturetime
           image: ghcr.io/blomma/api.literaturetime:main
           ports:
             - containerPort: 80
@@ -29,13 +29,13 @@ spec:
           imagePullPolicy: Always
   selector:
     matchLabels:
-      app: api-literature
+      app: api-literaturetime
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: api-literature
+  name: api-literaturetime
   namespace: literature
 
 spec:
@@ -43,21 +43,21 @@ spec:
     - name: http
       port: 80
   selector:
-    app: api-literature
+    app: api-literaturetime
 
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: api-literature
+  name: api-literaturetime
   namespace: literature
 
 spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`api-literature.192.168.1.11.nip.io`) && PathPrefix(`/api/1.0/literature`)
+    - match: Host(`api-literaturetime.192.168.1.11.nip.io`) && PathPrefix(`/api/1.0/literature`)
       kind: Rule
       services:
-        - name: api-literature
+        - name: api-literaturetime
           port: http
