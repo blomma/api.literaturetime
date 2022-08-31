@@ -5,11 +5,11 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9B111074-2804-42DB-816C-ABD2A8D64659}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Literature.API", "src\API.Literature.API\API.Literature.API.csproj", "{F7476EEB-92C3-4AC0-BF72-97244E76B503}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.LiteratureTime.API", "src\API.LiteratureTime.API\API.LiteratureTime.API.csproj", "{F7476EEB-92C3-4AC0-BF72-97244E76B503}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Literature.Infrastructure", "src\API.Literature.Infrastructure\API.Literature.Infrastructure.csproj", "{4DD3ED17-DC1D-407A-A3D9-73A6E59E8092}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.LiteratureTime.Infrastructure", "src\API.LiteratureTime.Infrastructure\API.LiteratureTime.Infrastructure.csproj", "{4DD3ED17-DC1D-407A-A3D9-73A6E59E8092}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Literature.Core", "src\API.Literature.Core\API.Literature.Core.csproj", "{63A547F0-FDD7-473D-981F-08BBFBC5B814}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.LiteratureTime.Core", "src\API.LiteratureTime.Core\API.LiteratureTime.Core.csproj", "{63A547F0-FDD7-473D-981F-08BBFBC5B814}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Irrbloss", "src\Irrbloss\Irrbloss.csproj", "{1CB4382D-DE7D-4525-A342-79690497CACC}"
 EndProject

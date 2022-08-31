@@ -1,5 +1,5 @@
 using System.Runtime.ExceptionServices;
-using Api.Literature.Core.Exceptions;
+using Api.LiteratureTime.Core.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Net.Http.Headers;
 
-namespace Api.Literature.Api.Middlewares;
+namespace Api.LiteratureTime.Api.Middlewares;
 
 public class ManagedResponseExceptionMiddleware
 {

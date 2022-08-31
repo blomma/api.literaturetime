@@ -10,9 +10,9 @@
       "request": "launch",
       "preLaunchTask": "build",
       // If you have changed target frameworks, make sure to update the program path.
-      "program": "${workspaceFolder}/src/API.Literature.API/bin/Debug/net6.0/API.Literature.API.dll",
+      "program": "${workspaceFolder}/src/API.LiteratureTime.API/bin/Debug/net6.0/API.LiteratureTime.API.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/src/API.Literature.API",
+      "cwd": "${workspaceFolder}/src/API.LiteratureTime.API",
       "stopAtEntry": false,
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development"

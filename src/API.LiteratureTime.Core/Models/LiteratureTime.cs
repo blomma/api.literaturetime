@@ -1,4 +1,4 @@
-namespace API.Literature.Core.Models;
+namespace API.LiteratureTime.Core.Models;
 
 public record LiteratureTime(
     string Time,

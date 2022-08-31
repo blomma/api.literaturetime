@@ -1,11 +1,11 @@
-namespace API.Literature.Core.Services;
+namespace API.LiteratureTime.Core.Services;
 
 using System.Collections.Generic;
-using API.Literature.Core.Interfaces;
-using API.Literature.Core.Models;
+using API.LiteratureTime.Core.Interfaces;
+using API.LiteratureTime.Core.Models;
 using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
-using Api.Literature.Core.Exceptions;
+using Api.LiteratureTime.Core.Exceptions;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;

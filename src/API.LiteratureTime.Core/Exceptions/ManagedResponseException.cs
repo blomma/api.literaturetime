@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Literature.Core.Exceptions;
+namespace Api.LiteratureTime.Core.Exceptions;
 
 
 [Serializable]

@@ -1,7 +1,7 @@
-namespace API.Literature.Core;
+namespace API.LiteratureTime.Core;
 
-using API.Literature.Core.Interfaces;
-using API.Literature.Core.Services;
+using API.LiteratureTime.Core.Interfaces;
+using API.LiteratureTime.Core.Services;
 using Irrbloss.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 

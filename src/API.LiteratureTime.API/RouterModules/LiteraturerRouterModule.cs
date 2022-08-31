@@ -1,6 +1,6 @@
-namespace API.Literature.API.RouterModules;
+namespace API.LiteratureTime.API.RouterModules;
 
-using global::API.Literature.Core.Interfaces;
+using global::API.LiteratureTime.Core.Interfaces;
 using Irrbloss.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

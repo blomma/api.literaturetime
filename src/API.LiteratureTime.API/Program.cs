@@ -1,5 +1,5 @@
-using Api.Literature.Api.Middlewares;
-using API.Literature.Core.Interfaces;
+using Api.LiteratureTime.Api.Middlewares;
+using API.LiteratureTime.Core.Interfaces;
 using Irrbloss.Extensions;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Extensions.Caching.Memory;
@@ -64,9 +64,9 @@ using (var scope = app.Services.CreateScope())
     ILiteratureService literatureService = scope.ServiceProvider.GetRequiredService<ILiteratureService>();
 
     var literatureTimes = literatureService.GetLiteratureTimes();
-    ILookup<string, API.Literature.Core.Models.LiteratureTime> lookup = literatureTimes.ToLookup(o => o.Time);
+    ILookup<string, API.LiteratureTime.Core.Models.LiteratureTime> lookup = literatureTimes.ToLookup(o => o.Time);
 
-    foreach (IGrouping<string, API.Literature.Core.Models.LiteratureTime> literatureTimesGroup in lookup)
+    foreach (IGrouping<string, API.LiteratureTime.Core.Models.LiteratureTime> literatureTimesGroup in lookup)
     {
         cache.Set(literatureTimesGroup.Key, literatureTimesGroup.ToList());
     }

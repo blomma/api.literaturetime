@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "API.Literature.API": {
+    "API.LiteratureTime.API": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

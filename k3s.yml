@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: api-literature
-          image: ghcr.io/blomma/api.literature:main
+          image: ghcr.io/blomma/api.literaturetime:main
           ports:
             - containerPort: 80
           env:

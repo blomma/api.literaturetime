@@ -1,7 +1,7 @@
-namespace API.Literature.Infrastructure.Providers;
+namespace API.LiteratureTime.Infrastructure.Providers;
 
 using System.Collections.Generic;
-using API.Literature.Core.Interfaces;
+using API.LiteratureTime.Core.Interfaces;
 
 public class LiteratureProvider : ILiteratureProvider
 {

@@ -14,8 +14,8 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Irrbloss\Irrbloss.csproj" />
-        <ProjectReference Include="..\API.Literature.Core\API.Literature.Core.csproj" />
-        <ProjectReference Include="..\API.Literature.Infrastructure\API.Literature.Infrastructure.csproj" />
+        <ProjectReference Include="..\API.LiteratureTime.Core\API.LiteratureTime.Core.csproj" />
+        <ProjectReference Include="..\API.LiteratureTime.Infrastructure\API.LiteratureTime.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>

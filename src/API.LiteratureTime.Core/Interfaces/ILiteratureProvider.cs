@@ -1,4 +1,4 @@
-namespace API.Literature.Core.Interfaces;
+namespace API.LiteratureTime.Core.Interfaces;
 
 public interface ILiteratureProvider
 {

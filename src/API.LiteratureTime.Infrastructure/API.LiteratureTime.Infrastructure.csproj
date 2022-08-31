@@ -8,7 +8,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Irrbloss\Irrbloss.csproj" />
-        <ProjectReference Include="..\API.Literature.Core\API.Literature.Core.csproj" />
+        <ProjectReference Include="..\API.LiteratureTime.Core\API.LiteratureTime.Core.csproj" />
     </ItemGroup>
 
 </Project>
