@@ -2,56 +2,56 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: api-literaturetime
-  namespace: literature
+    name: api-literaturetime
+    namespace: literature
 
 spec:
-  replicas: 2
-  template:
-    metadata:
-      labels:
-        app: api-literaturetime
-    spec:
-      containers:
-        - name: api-literaturetime
-          image: ghcr.io/blomma/api.literaturetime:main
-          ports:
-            - containerPort: 80
-          env:
-            - name: ASPNETCORE_URLS
-              value: http://*:80
-          imagePullPolicy: Always
-  selector:
-    matchLabels:
-      app: api-literaturetime
+    replicas: 2
+    template:
+        metadata:
+            labels:
+                app: api-literaturetime
+        spec:
+            containers:
+                - name: api-literaturetime
+                  image: ghcr.io/blomma/api.literaturetime:main
+                  ports:
+                      - containerPort: 80
+                  env:
+                      - name: ASPNETCORE_URLS
+                        value: http://*:80
+                  imagePullPolicy: Always
+    selector:
+        matchLabels:
+            app: api-literaturetime
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: api-literaturetime
-  namespace: literature
+    name: api-literaturetime
+    namespace: literature
 
 spec:
-  ports:
-    - name: http
-      port: 80
-  selector:
-    app: api-literaturetime
+    ports:
+        - name: http
+          port: 80
+    selector:
+        app: api-literaturetime
 
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: api-literaturetime
-  namespace: literature
+    name: api-literaturetime
+    namespace: literature
 
 spec:
-  entryPoints:
-    - web
-  routes:
-    - match: Host(`api-literaturetime.192.168.1.11.nip.io`) && PathPrefix(`/api/1.0/literature`)
-      kind: Rule
-      services:
-        - name: api-literaturetime
-          port: http
+    entryPoints:
+        - web
+    routes:
+        - match: Host(`api-literaturetime.192.168.1.11.nip.io`) && PathPrefix(`/api/1.0/literature`)
+          kind: Rule
+          services:
+              - name: api-literaturetime
+                port: http
