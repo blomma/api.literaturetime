@@ -18,7 +18,8 @@ public static class IrrblossExtensions
 
     private static void WireupServiceModules(
         this IServiceCollection services,
-        DependencyContextAssemblyCatalog assemblyCatalog)
+        DependencyContextAssemblyCatalog assemblyCatalog
+    )
     {
         var assemblies = assemblyCatalog.GetAssemblies();
 
@@ -36,18 +37,20 @@ public static class IrrblossExtensions
         }
     }
 
-    private static IEnumerable<Type> GetServiceModules(
-        IReadOnlyCollection<Assembly> assemblies)
+    private static IEnumerable<Type> GetServiceModules(IReadOnlyCollection<Assembly> assemblies)
     {
-        return assemblies.SelectMany(x => x.GetTypes()
-            .Where(t =>
-                !t.IsAbstract &&
-                typeof(IServiceModule).IsAssignableFrom(t) &&
-                t != typeof(IServiceModule) &&
-                t.IsPublic
-        ));
+        return assemblies.SelectMany(
+            x =>
+                x.GetTypes()
+                    .Where(
+                        t =>
+                            !t.IsAbstract
+                            && typeof(IServiceModule).IsAssignableFrom(t)
+                            && t != typeof(IServiceModule)
+                            && t.IsPublic
+                    )
+        );
     }
-
 
     public static void MapRouterModules(this IEndpointRouteBuilder builder)
     {
@@ -66,7 +69,8 @@ public static class IrrblossExtensions
 
     private static void WireupRouterModules(
         this IServiceCollection services,
-        DependencyContextAssemblyCatalog assemblyCatalog)
+        DependencyContextAssemblyCatalog assemblyCatalog
+    )
     {
         var assemblies = assemblyCatalog.GetAssemblies();
 
@@ -78,15 +82,18 @@ public static class IrrblossExtensions
         }
     }
 
-    private static IEnumerable<Type> GetRouterModules(
-        IReadOnlyCollection<Assembly> assemblies)
+    private static IEnumerable<Type> GetRouterModules(IReadOnlyCollection<Assembly> assemblies)
     {
-        return assemblies.SelectMany(x => x.GetTypes()
-            .Where(t =>
-                !t.IsAbstract &&
-                typeof(Interfaces.IRouterModule).IsAssignableFrom(t) &&
-                t != typeof(Interfaces.IRouterModule) &&
-                t.IsPublic
-        ));
+        return assemblies.SelectMany(
+            x =>
+                x.GetTypes()
+                    .Where(
+                        t =>
+                            !t.IsAbstract
+                            && typeof(Interfaces.IRouterModule).IsAssignableFrom(t)
+                            && t != typeof(Interfaces.IRouterModule)
+                            && t.IsPublic
+                    )
+        );
     }
 }

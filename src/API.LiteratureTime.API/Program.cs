@@ -6,17 +6,16 @@ using Microsoft.Extensions.Caching.Memory;
 using Serilog;
 using Serilog.Events;
 
-Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-            .Enrich.FromLogContext()
-            .WriteTo.Console()
-            .CreateBootstrapLogger();
+Log.Logger = new LoggerConfiguration().MinimumLevel
+    .Override("Microsoft", LogEventLevel.Information)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseSerilog((context, services, configuration) =>
-    configuration
-        .ReadFrom.Configuration(context.Configuration)
-        .ReadFrom.Services(services)
+builder.Host.UseSerilog(
+    (context, services, configuration) =>
+        configuration.ReadFrom.Configuration(context.Configuration).ReadFrom.Services(services)
 );
 
 // Add services to the container.
@@ -61,16 +60,24 @@ if (app.Environment.IsDevelopment())
 IMemoryCache cache = app.Services.GetRequiredService<IMemoryCache>();
 using (var scope = app.Services.CreateScope())
 {
-    ILiteratureService literatureService = scope.ServiceProvider.GetRequiredService<ILiteratureService>();
+    ILiteratureService literatureService =
+        scope.ServiceProvider.GetRequiredService<ILiteratureService>();
 
     var literatureTimes = literatureService.GetLiteratureTimes();
-    ILookup<string, API.LiteratureTime.Core.Models.LiteratureTime> lookup = literatureTimes.ToLookup(o => o.Time);
+    ILookup<string, API.LiteratureTime.Core.Models.LiteratureTime> lookup =
+        literatureTimes.ToLookup(o => o.Time);
 
-    foreach (IGrouping<string, API.LiteratureTime.Core.Models.LiteratureTime> literatureTimesGroup in lookup)
+    foreach (
+        IGrouping<
+            string,
+            API.LiteratureTime.Core.Models.LiteratureTime
+        > literatureTimesGroup in lookup
+    )
     {
         cache.Set(literatureTimesGroup.Key, literatureTimesGroup.ToList());
     }
 }
+
 // END POPULATION
 
 app.UseManagedResponseException();

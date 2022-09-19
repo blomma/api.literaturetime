@@ -23,9 +23,7 @@ public class DependencyContextAssemblyCatalog
         IrrblossAssemblyName = name;
     }
 
-    public DependencyContextAssemblyCatalog()
-        : this(Assembly.GetEntryAssembly())
-    { }
+    public DependencyContextAssemblyCatalog() : this(Assembly.GetEntryAssembly()) { }
 
     public DependencyContextAssemblyCatalog(Assembly? entryAssembly)
     {
@@ -34,10 +32,7 @@ public class DependencyContextAssemblyCatalog
 
     public virtual IReadOnlyCollection<Assembly> GetAssemblies()
     {
-        var results = new HashSet<Assembly>
-        {
-            typeof(DependencyContextAssemblyCatalog).Assembly
-        };
+        var results = new HashSet<Assembly> { typeof(DependencyContextAssemblyCatalog).Assembly };
 
         foreach (var library in _dependencyContext.RuntimeLibraries)
         {
