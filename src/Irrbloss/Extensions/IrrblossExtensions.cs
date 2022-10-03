@@ -12,15 +12,7 @@ public static class IrrblossExtensions
 {
     public static IServiceCollection AddServiceModules(this IServiceCollection services)
     {
-        WireupServiceModules(services, new DependencyContextAssemblyCatalog());
-        return services;
-    }
-
-    private static void WireupServiceModules(
-        this IServiceCollection services,
-        DependencyContextAssemblyCatalog assemblyCatalog
-    )
-    {
+        var assemblyCatalog = new DependencyContextAssemblyCatalog();
         var assemblies = assemblyCatalog.GetAssemblies();
 
         var serviceModules = GetServiceModules(assemblies);
@@ -35,6 +27,8 @@ public static class IrrblossExtensions
 
             t.AddServices(services);
         }
+
+        return services;
     }
 
     private static IEnumerable<Type> GetServiceModules(IReadOnlyCollection<Assembly> assemblies)
@@ -52,26 +46,9 @@ public static class IrrblossExtensions
         );
     }
 
-    public static void MapRouterModules(this IEndpointRouteBuilder builder)
-    {
-        foreach (var newMod in builder.ServiceProvider.GetServices<Interfaces.IRouterModule>())
-        {
-            newMod.AddRoutes(builder);
-        }
-    }
-
     public static IServiceCollection AddRouterModules(this IServiceCollection services)
     {
-        WireupRouterModules(services, new DependencyContextAssemblyCatalog());
-
-        return services;
-    }
-
-    private static void WireupRouterModules(
-        this IServiceCollection services,
-        DependencyContextAssemblyCatalog assemblyCatalog
-    )
-    {
+        var assemblyCatalog = new DependencyContextAssemblyCatalog();
         var assemblies = assemblyCatalog.GetAssemblies();
 
         var routerModules = GetRouterModules(assemblies);
@@ -80,6 +57,8 @@ public static class IrrblossExtensions
         {
             services.AddSingleton(typeof(Interfaces.IRouterModule), routerModule);
         }
+
+        return services;
     }
 
     private static IEnumerable<Type> GetRouterModules(IReadOnlyCollection<Assembly> assemblies)
@@ -95,5 +74,13 @@ public static class IrrblossExtensions
                             && t.IsPublic
                     )
         );
+    }
+
+    public static void MapRouterModules(this IEndpointRouteBuilder builder)
+    {
+        foreach (var newMod in builder.ServiceProvider.GetServices<Interfaces.IRouterModule>())
+        {
+            newMod.AddRoutes(builder);
+        }
     }
 }
