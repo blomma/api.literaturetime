@@ -81,6 +81,6 @@ using (var scope = app.Services.CreateScope())
 // END POPULATION
 
 app.UseManagedResponseException();
-app.MapRouterModules();
+app.UseRouterModules();
 
 app.Run();

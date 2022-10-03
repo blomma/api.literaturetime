@@ -45,12 +45,14 @@ public static class IrrblossExtensions
         return services;
     }
 
-    public static void MapRouterModules(this IEndpointRouteBuilder builder)
+    public static IEndpointRouteBuilder UseRouterModules(this IEndpointRouteBuilder builder)
     {
         foreach (var newMod in builder.ServiceProvider.GetServices<IRouterModule>())
         {
             newMod.AddRoutes(builder);
         }
+
+        return builder;
     }
 
     private static IEnumerable<Type> GetModules<T>(IReadOnlyCollection<Assembly> assemblies)
