@@ -19,8 +19,7 @@ public static class IrrblossExtensions
 
         foreach (var serviceModule in serviceModules)
         {
-            IServiceModule? t = (IServiceModule?)Activator.CreateInstance(serviceModule);
-            if (t == null)
+            if (Activator.CreateInstance(serviceModule) is not IServiceModule t)
             {
                 throw new Exception();
             }
@@ -55,7 +54,7 @@ public static class IrrblossExtensions
 
         foreach (var routerModule in routerModules)
         {
-            services.AddSingleton(typeof(Interfaces.IRouterModule), routerModule);
+            services.AddSingleton(typeof(IRouterModule), routerModule);
         }
 
         return services;
@@ -69,8 +68,8 @@ public static class IrrblossExtensions
                     .Where(
                         t =>
                             !t.IsAbstract
-                            && typeof(Interfaces.IRouterModule).IsAssignableFrom(t)
-                            && t != typeof(Interfaces.IRouterModule)
+                            && typeof(IRouterModule).IsAssignableFrom(t)
+                            && t != typeof(IRouterModule)
                             && t.IsPublic
                     )
         );
@@ -78,7 +77,7 @@ public static class IrrblossExtensions
 
     public static void MapRouterModules(this IEndpointRouteBuilder builder)
     {
-        foreach (var newMod in builder.ServiceProvider.GetServices<Interfaces.IRouterModule>())
+        foreach (var newMod in builder.ServiceProvider.GetServices<IRouterModule>())
         {
             newMod.AddRoutes(builder);
         }
