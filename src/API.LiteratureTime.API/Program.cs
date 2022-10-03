@@ -1,6 +1,6 @@
-using Api.LiteratureTime.Api.Middlewares;
 using API.LiteratureTime.Core.Interfaces;
 using Irrbloss.Extensions;
+using Irrbloss.Middlewares;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Extensions.Caching.Memory;
 using Serilog;

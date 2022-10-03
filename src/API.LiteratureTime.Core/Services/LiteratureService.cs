@@ -5,10 +5,10 @@ using API.LiteratureTime.Core.Interfaces;
 using API.LiteratureTime.Core.Models;
 using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
-using Api.LiteratureTime.Core.Exceptions;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using Irrbloss.Exceptions;
 
 public class LiteratureService : ILiteratureService
 {
