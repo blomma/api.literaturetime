@@ -15,7 +15,7 @@ public static class IrrblossExtensions
         var assemblyCatalog = new DependencyContextAssemblyCatalog();
         var assemblies = assemblyCatalog.GetAssemblies();
 
-        var serviceModules = GetServiceModules(assemblies);
+        var serviceModules = GetModules<IServiceModule>(assemblies);
 
         foreach (var serviceModule in serviceModules)
         {
@@ -30,27 +30,12 @@ public static class IrrblossExtensions
         return services;
     }
 
-    private static IEnumerable<Type> GetServiceModules(IReadOnlyCollection<Assembly> assemblies)
-    {
-        return assemblies.SelectMany(
-            x =>
-                x.GetTypes()
-                    .Where(
-                        t =>
-                            !t.IsAbstract
-                            && typeof(IServiceModule).IsAssignableFrom(t)
-                            && t != typeof(IServiceModule)
-                            && t.IsPublic
-                    )
-        );
-    }
-
     public static IServiceCollection AddRouterModules(this IServiceCollection services)
     {
         var assemblyCatalog = new DependencyContextAssemblyCatalog();
         var assemblies = assemblyCatalog.GetAssemblies();
 
-        var routerModules = GetRouterModules(assemblies);
+        var routerModules = GetModules<IRouterModule>(assemblies);
 
         foreach (var routerModule in routerModules)
         {
@@ -60,7 +45,15 @@ public static class IrrblossExtensions
         return services;
     }
 
-    private static IEnumerable<Type> GetRouterModules(IReadOnlyCollection<Assembly> assemblies)
+    public static void MapRouterModules(this IEndpointRouteBuilder builder)
+    {
+        foreach (var newMod in builder.ServiceProvider.GetServices<IRouterModule>())
+        {
+            newMod.AddRoutes(builder);
+        }
+    }
+
+    private static IEnumerable<Type> GetModules<T>(IReadOnlyCollection<Assembly> assemblies)
     {
         return assemblies.SelectMany(
             x =>
@@ -68,18 +61,10 @@ public static class IrrblossExtensions
                     .Where(
                         t =>
                             !t.IsAbstract
-                            && typeof(IRouterModule).IsAssignableFrom(t)
-                            && t != typeof(IRouterModule)
+                            && typeof(T).IsAssignableFrom(t)
+                            && t != typeof(T)
                             && t.IsPublic
                     )
         );
-    }
-
-    public static void MapRouterModules(this IEndpointRouteBuilder builder)
-    {
-        foreach (var newMod in builder.ServiceProvider.GetServices<IRouterModule>())
-        {
-            newMod.AddRoutes(builder);
-        }
     }
 }
