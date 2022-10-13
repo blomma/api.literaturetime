@@ -4,7 +4,6 @@ using API.LiteratureTime.Core.Models;
 
 public interface ILiteratureService
 {
-    public LiteratureTime GetRandomLiteratureTime(string hour, string minute);
-    public LiteratureTime GetLiteratureTime(string hour, string minute, string hash);
-    public List<LiteratureTime> GetLiteratureTimes();
+    public Task<LiteratureTime> GetRandomLiteratureTimeAsync(string hour, string minute);
+    public Task<LiteratureTime> GetLiteratureTimeAsync(string hour, string minute, string hash);
 }

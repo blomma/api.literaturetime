@@ -1,8 +1,6 @@
-using API.LiteratureTime.Core.Interfaces;
 using Irrbloss.Extensions;
 using Irrbloss.Middlewares;
 using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.Extensions.Caching.Memory;
 using Serilog;
 using Serilog.Events;
 
@@ -28,7 +26,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddServiceModules();
 builder.Services.AddRouterModules();
 
-builder.Services.AddMemoryCache();
 builder.Services.AddManagedResponseException();
 
 builder.Services.AddHttpLogging(logging =>
@@ -56,31 +53,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Populate cache
-IMemoryCache cache = app.Services.GetRequiredService<IMemoryCache>();
-using (var scope = app.Services.CreateScope())
-{
-    ILiteratureService literatureService =
-        scope.ServiceProvider.GetRequiredService<ILiteratureService>();
-
-    var literatureTimes = literatureService.GetLiteratureTimes();
-    ILookup<string, API.LiteratureTime.Core.Models.LiteratureTime> lookup =
-        literatureTimes.ToLookup(o => o.Time);
-
-    foreach (
-        IGrouping<
-            string,
-            API.LiteratureTime.Core.Models.LiteratureTime
-        > literatureTimesGroup in lookup
-    )
-    {
-        cache.Set(literatureTimesGroup.Key, literatureTimesGroup.ToList());
-    }
-}
-
-// END POPULATION
-
 app.UseManagedResponseException();
 app.UseRouterModules();
+app.UseStartupModules();
 
 app.Run();

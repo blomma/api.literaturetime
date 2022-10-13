@@ -12,7 +12,7 @@ public class LiteratureRouterModule : IRouterModule
                 "/api/1.0/literature/{hour}/{minute}",
                 ([FromServices] ILiteratureService literatureService, string hour, string minute) =>
                 {
-                    return literatureService.GetRandomLiteratureTime(hour, minute);
+                    return literatureService.GetRandomLiteratureTimeAsync(hour, minute);
                 }
             )
             .WithName("GetRandomLiteratureTime");
@@ -26,18 +26,9 @@ public class LiteratureRouterModule : IRouterModule
                     string hash
                 ) =>
                 {
-                    return literatureService.GetLiteratureTime(hour, minute, hash);
+                    return literatureService.GetLiteratureTimeAsync(hour, minute, hash);
                 }
             )
             .WithName("GetSpecificLiteratureTime");
-
-        app.MapGet(
-                "/api/1.0/literatures",
-                ([FromServices] ILiteratureService literatureService) =>
-                {
-                    return literatureService.GetLiteratureTimes();
-                }
-            )
-            .WithName("GetLiteratureTimes");
     }
 }

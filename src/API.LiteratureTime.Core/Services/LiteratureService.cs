@@ -3,25 +3,26 @@ namespace API.LiteratureTime.Core.Services;
 using System.Collections.Generic;
 using API.LiteratureTime.Core.Interfaces;
 using API.LiteratureTime.Core.Models;
-using System.Linq;
-using Microsoft.Extensions.Caching.Memory;
 using System.Net;
-using System.Security.Cryptography;
-using System.Text;
 using Irrbloss.Exceptions;
+using Irrbloss;
+using System.Threading.Tasks;
+using System.Text.Json;
 
 public class LiteratureService : ILiteratureService
 {
-    private readonly ILiteratureProvider _literatureProvider;
-    private readonly IMemoryCache _cache;
+    private const string KEY_PREFIX = "LIT";
 
-    public LiteratureService(ILiteratureProvider literatureProvider, IMemoryCache cache)
+    private readonly RedisConnection _redisConnection;
+
+    public LiteratureService(RedisConnection redisConnection)
     {
-        _literatureProvider = literatureProvider;
-        _cache = cache;
+        _redisConnection = redisConnection;
     }
 
-    public LiteratureTime GetRandomLiteratureTime(string hour, string minute)
+    private static string PrefixKey(string key) => $"{KEY_PREFIX}:{key}";
+
+    public async Task<LiteratureTime> GetRandomLiteratureTimeAsync(string hour, string minute)
     {
         if (hour.Length != 2 || minute.Length != 2)
         {
@@ -32,8 +33,18 @@ public class LiteratureService : ILiteratureService
         }
 
         var key = $"{hour}:{minute}";
-        var entries = _cache.Get<List<LiteratureTime>>(key);
+        string? result = await _redisConnection.BasicRetryAsync(
+            (db) => db.StringGetAsync(PrefixKey(key))
+        );
+        if (result == null)
+        {
+            throw new ManagedresponseException(
+                HttpStatusCode.NotFound,
+                $"The specified hour:{hour} and minute:{minute} was not found, key:{key}"
+            );
+        }
 
+        var entries = JsonSerializer.Deserialize<List<LiteratureTime>>(result);
         if (entries == null || entries.Count == 0)
         {
             throw new ManagedresponseException(
@@ -46,7 +57,11 @@ public class LiteratureService : ILiteratureService
         return entries[index];
     }
 
-    public LiteratureTime GetLiteratureTime(string hour, string minute, string hash)
+    public async Task<LiteratureTime> GetLiteratureTimeAsync(
+        string hour,
+        string minute,
+        string hash
+    )
     {
         if (hour.Length != 2 || minute.Length != 2)
         {
@@ -57,8 +72,18 @@ public class LiteratureService : ILiteratureService
         }
 
         var key = $"{hour}:{minute}";
-        var entries = _cache.Get<List<LiteratureTime>>(key);
+        string? result = await _redisConnection.BasicRetryAsync(
+            (db) => db.StringGetAsync(PrefixKey(key))
+        );
+        if (result == null)
+        {
+            throw new ManagedresponseException(
+                HttpStatusCode.NotFound,
+                $"The specified hour:{hour} and minute:{minute} was not found, key:{key}"
+            );
+        }
 
+        var entries = JsonSerializer.Deserialize<List<LiteratureTime>>(result);
         if (entries == null || entries.Count == 0)
         {
             throw new ManagedresponseException(
@@ -77,54 +102,5 @@ public class LiteratureService : ILiteratureService
         }
 
         return entry;
-    }
-
-    public List<LiteratureTime> GetLiteratureTimes()
-    {
-        var result = _literatureProvider.GetLiteratureTimes();
-        using SHA256 sha256Hash = SHA256.Create();
-
-        return result
-            .Select(r =>
-            {
-                var a = r.Split("|");
-                var time = a[0].Trim();
-                var literatureTime = a[1].Trim();
-                var quote = a[2].Trim();
-                var title = a[3].Trim();
-                var author = a[4].Trim();
-
-                var hash = GetHash(sha256Hash, $"{time}{literatureTime}{quote}{title}{author}");
-
-                var qi = quote.ToLowerInvariant().IndexOf(literatureTime.ToLowerInvariant());
-                var quoteFirst = qi > 0 ? quote[..qi] : "";
-                var quoteTime = quote[qi..(qi + literatureTime.Length)];
-                var quoteLast = quote[(qi + literatureTime.Length)..];
-
-                return new LiteratureTime(
-                    time,
-                    quoteFirst,
-                    quoteTime,
-                    quoteLast,
-                    title,
-                    author,
-                    hash
-                );
-            })
-            .ToList();
-    }
-
-    private static string GetHash(HashAlgorithm hashAlgorithm, string input)
-    {
-        byte[] data = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(input));
-
-        var stringBuilder = new StringBuilder();
-
-        for (int i = 0; i < data.Length; i++)
-        {
-            stringBuilder.Append(data[i].ToString("x2"));
-        }
-
-        return stringBuilder.ToString();
     }
 }
