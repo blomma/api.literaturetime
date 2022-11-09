@@ -1,6 +1,6 @@
-namespace API.LiteratureTime.API.RouterModules;
+namespace API.LiteratureTime.API.RouterModules.v2;
 
-using global::API.LiteratureTime.Core.Interfaces;
+using global::API.LiteratureTime.Core.Interfaces.v2;
 using Irrbloss.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,16 +9,16 @@ public class LiteratureRouterModule : IRouterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapGet(
-                "/api/1.0/literature/{hour}/{minute}",
+                "/api/2.0/literature/{hour}/{minute}",
                 ([FromServices] ILiteratureService literatureService, string hour, string minute) =>
                 {
                     return literatureService.GetRandomLiteratureTimeAsync(hour, minute);
                 }
             )
-            .WithName("GetRandomLiteratureTime");
+            .WithName("V2GetRandomLiteratureTime");
 
         app.MapGet(
-                "/api/1.0/literature/{hour}/{minute}/{hash}",
+                "/api/2.0/literature/{hour}/{minute}/{hash}",
                 (
                     [FromServices] ILiteratureService literatureService,
                     string hour,
@@ -29,6 +29,6 @@ public class LiteratureRouterModule : IRouterModule
                     return literatureService.GetLiteratureTimeAsync(hour, minute, hash);
                 }
             )
-            .WithName("GetSpecificLiteratureTime");
+            .WithName("V2GetSpecificLiteratureTime");
     }
 }

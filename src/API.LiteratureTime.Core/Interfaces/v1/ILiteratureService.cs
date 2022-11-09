@@ -1,4 +1,4 @@
-namespace API.LiteratureTime.Core.Interfaces;
+namespace API.LiteratureTime.Core.Interfaces.v1;
 
 using API.LiteratureTime.Core.Models;
 

@@ -1,17 +1,17 @@
-namespace API.LiteratureTime.Core.Services;
+namespace API.LiteratureTime.Core.Services.v2;
 
 using System.Collections.Generic;
-using API.LiteratureTime.Core.Interfaces;
 using API.LiteratureTime.Core.Models;
 using System.Net;
 using Irrbloss.Exceptions;
 using Irrbloss;
 using System.Threading.Tasks;
 using System.Text.Json;
+using API.LiteratureTime.Core.Interfaces.v2;
 
 public class LiteratureService : ILiteratureService
 {
-    private const string KEY_PREFIX = "LIT";
+    private const string KEY_PREFIX = "LIT_V2";
 
     private readonly RedisConnection _redisConnection;
 
