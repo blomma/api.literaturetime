@@ -33,13 +33,15 @@ public class LiteratureService : ILiteratureService
         }
 
         var key = PrefixKey($"{hour}:{minute}");
-        string? result = await _redisConnection.BasicRetryAsync(
-            static (db, k) =>
-            {
-                return db.StringGetAsync(k);
-            },
-            key
-        );
+        string? result = await _redisConnection
+            .BasicRetryAsync(
+                static (db, k) =>
+                {
+                    return db.StringGetAsync(k);
+                },
+                key
+            )
+            .ConfigureAwait(false);
 
         if (result == null)
         {
@@ -77,13 +79,15 @@ public class LiteratureService : ILiteratureService
         }
 
         var key = $"{hour}:{minute}";
-        string? result = await _redisConnection.BasicRetryAsync(
-            static (db, k) =>
-            {
-                return db.StringGetAsync(k);
-            },
-            PrefixKey(key)
-        );
+        string? result = await _redisConnection
+            .BasicRetryAsync(
+                static (db, k) =>
+                {
+                    return db.StringGetAsync(k);
+                },
+                PrefixKey(key)
+            )
+            .ConfigureAwait(false);
         if (result == null)
         {
             throw new ManagedresponseException(
@@ -101,7 +105,7 @@ public class LiteratureService : ILiteratureService
             );
         }
 
-        var entry = entries.Find(e => e.Hash == hash);
+        var entry = entries.Find(e => string.Equals(e.Hash, hash, StringComparison.Ordinal));
         if (entry == null)
         {
             throw new ManagedresponseException(

@@ -1,5 +1,4 @@
 using Irrbloss.Extensions;
-using Irrbloss.Middlewares;
 using Microsoft.AspNetCore.HttpLogging;
 using Serilog;
 using Serilog.Events;

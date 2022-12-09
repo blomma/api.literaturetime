@@ -13,7 +13,8 @@ public class StartupModule : IStartupModule
         IConfiguration configuration = app.ServiceProvider.GetRequiredService<IConfiguration>();
         var connectionString = configuration.GetConnectionString("Redis");
 
-        if (connectionString == null) {
+        if (connectionString == null)
+        {
             throw new Exception();
         }
 
