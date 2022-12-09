@@ -32,10 +32,15 @@ public class LiteratureService : ILiteratureService
             );
         }
 
-        var key = $"{hour}:{minute}";
+        var key = PrefixKey($"{hour}:{minute}");
         string? result = await _redisConnection.BasicRetryAsync(
-            (db) => db.StringGetAsync(PrefixKey(key))
+            static (db, k) =>
+            {
+                return db.StringGetAsync(k);
+            },
+            key
         );
+
         if (result == null)
         {
             throw new ManagedresponseException(
@@ -73,7 +78,11 @@ public class LiteratureService : ILiteratureService
 
         var key = $"{hour}:{minute}";
         string? result = await _redisConnection.BasicRetryAsync(
-            (db) => db.StringGetAsync(PrefixKey(key))
+            static (db, k) =>
+            {
+                return db.StringGetAsync(k);
+            },
+            PrefixKey(key)
         );
         if (result == null)
         {
