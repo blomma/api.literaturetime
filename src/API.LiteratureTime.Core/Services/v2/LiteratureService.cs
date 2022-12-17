@@ -8,6 +8,7 @@ using Irrbloss;
 using System.Threading.Tasks;
 using System.Text.Json;
 using API.LiteratureTime.Core.Interfaces.v2;
+using Microsoft.Extensions.Logging;
 
 public class LiteratureService : ILiteratureService
 {
@@ -15,9 +16,12 @@ public class LiteratureService : ILiteratureService
 
     private readonly RedisConnection _redisConnection;
 
-    public LiteratureService(RedisConnection redisConnection)
+    private readonly ILogger<LiteratureService> _logger;
+
+    public LiteratureService(RedisConnection redisConnection, ILogger<LiteratureService> logger)
     {
         _redisConnection = redisConnection;
+        _logger = logger;
     }
 
     private static string PrefixKey(string key) => $"{KEY_PREFIX}:{key}";
@@ -33,6 +37,8 @@ public class LiteratureService : ILiteratureService
         }
 
         var key = PrefixKey($"{hour}:{minute}");
+
+        _logger.LogInformation("Before result");
         string? result = await _redisConnection
             .BasicRetryAsync(
                 static (db, k) =>
@@ -42,6 +48,7 @@ public class LiteratureService : ILiteratureService
                 key
             )
             .ConfigureAwait(false);
+        _logger.LogInformation("After result");
 
         if (result == null)
         {
