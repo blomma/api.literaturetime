@@ -1,6 +1,5 @@
 namespace API.LiteratureTime.Infrastructure;
 
-using Irrbloss;
 using Irrbloss.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
