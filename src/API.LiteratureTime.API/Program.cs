@@ -22,7 +22,7 @@ builder.Services.AddMvcCore();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddServiceModules();
+builder.Services.AddServiceModules(builder.Configuration);
 builder.Services.AddRouterModules();
 
 builder.Services.AddManagedResponseException();

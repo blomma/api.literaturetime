@@ -4,20 +4,18 @@ using System.Collections.Generic;
 using API.LiteratureTime.Core.Models;
 using System.Net;
 using Irrbloss.Exceptions;
-using Irrbloss;
 using System.Threading.Tasks;
-using System.Text.Json;
 using API.LiteratureTime.Core.Interfaces.v2;
 
 public class LiteratureService : ILiteratureService
 {
     private const string KEY_PREFIX = "LIT_V2";
 
-    private readonly RedisConnection _redisConnection;
+    private readonly ICacheProvider _cacheProvider;
 
-    public LiteratureService(RedisConnection redisConnection)
+    public LiteratureService(ICacheProvider cacheProvider)
     {
-        _redisConnection = redisConnection;
+        _cacheProvider = cacheProvider;
     }
 
     private static string PrefixKey(string key) => $"{KEY_PREFIX}:{key}";
@@ -33,16 +31,7 @@ public class LiteratureService : ILiteratureService
         }
 
         var key = PrefixKey($"{hour}:{minute}");
-        string? result = await _redisConnection
-            .BasicRetryAsync(
-                static (db, k) =>
-                {
-                    return db.StringGetAsync(k);
-                },
-                key
-            )
-            .ConfigureAwait(false);
-
+        var result = await _cacheProvider.GetAsync<List<LiteratureTime>>(key);
         if (result == null)
         {
             throw new ManagedresponseException(
@@ -51,8 +40,7 @@ public class LiteratureService : ILiteratureService
             );
         }
 
-        var entries = JsonSerializer.Deserialize<List<LiteratureTime>>(result);
-        if (entries == null || entries.Count == 0)
+        if (result.Count == 0)
         {
             throw new ManagedresponseException(
                 HttpStatusCode.NotFound,
@@ -60,8 +48,8 @@ public class LiteratureService : ILiteratureService
             );
         }
 
-        int index = new Random().Next(entries.Count);
-        return entries[index];
+        int index = new Random().Next(result.Count);
+        return result[index];
     }
 
     public async Task<LiteratureTime> GetLiteratureTimeAsync(
@@ -78,16 +66,8 @@ public class LiteratureService : ILiteratureService
             );
         }
 
-        var key = $"{hour}:{minute}";
-        string? result = await _redisConnection
-            .BasicRetryAsync(
-                static (db, k) =>
-                {
-                    return db.StringGetAsync(k);
-                },
-                PrefixKey(key)
-            )
-            .ConfigureAwait(false);
+        var key = PrefixKey($"{hour}:{minute}");
+        var result = await _cacheProvider.GetAsync<List<LiteratureTime>>(PrefixKey(key));
         if (result == null)
         {
             throw new ManagedresponseException(
@@ -96,8 +76,7 @@ public class LiteratureService : ILiteratureService
             );
         }
 
-        var entries = JsonSerializer.Deserialize<List<LiteratureTime>>(result);
-        if (entries == null || entries.Count == 0)
+        if (result.Count == 0)
         {
             throw new ManagedresponseException(
                 HttpStatusCode.NotFound,
@@ -105,7 +84,7 @@ public class LiteratureService : ILiteratureService
             );
         }
 
-        var entry = entries.Find(e => string.Equals(e.Hash, hash, StringComparison.Ordinal));
+        var entry = result.Find(e => string.Equals(e.Hash, hash, StringComparison.Ordinal));
         if (entry == null)
         {
             throw new ManagedresponseException(
