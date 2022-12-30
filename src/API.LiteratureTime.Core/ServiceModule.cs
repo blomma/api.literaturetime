@@ -8,6 +8,7 @@ public class ServiceModule : IServiceModule
 {
     public void AddServices(IServiceCollection service, IConfiguration configuration)
     {
-        service.AddScoped<Interfaces.v2.ILiteratureService, Services.v2.LiteratureService>();
+        service.AddScoped<Interfaces.ILiteratureService, Services.LiteratureService>();
+        service.AddSingleton<Interfaces.ILiteratureIndexService, Services.LiteratureIndexService>();
     }
 }

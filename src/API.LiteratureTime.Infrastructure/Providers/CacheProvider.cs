@@ -1,7 +1,7 @@
-namespace API.LiteratureTime.Infrastructure.Providers.v2;
+namespace API.LiteratureTime.Infrastructure.Providers;
 
 using System.Text.Json;
-using API.LiteratureTime.Core.Interfaces.v2;
+using API.LiteratureTime.Core.Interfaces;
 using StackExchange.Redis;
 
 public class CacheProvider : ICacheProvider

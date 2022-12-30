@@ -1,6 +1,6 @@
-namespace API.LiteratureTime.API.RouterModules.v2;
+namespace API.LiteratureTime.API.RouterModules;
 
-using global::API.LiteratureTime.Core.Interfaces.v2;
+using global::API.LiteratureTime.Core.Interfaces;
 using Irrbloss.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +26,7 @@ public class LiteratureRouterModule : IRouterModule
                     string hash
                 ) =>
                 {
-                    return literatureService.GetLiteratureTimeAsync(hour, minute, hash);
+                    return literatureService.GetLiteratureTimeAsync(hash);
                 }
             )
             .WithName("V2GetSpecificLiteratureTime");

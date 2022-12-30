@@ -1,4 +1,4 @@
-namespace API.LiteratureTime.Core.Interfaces.v2;
+namespace API.LiteratureTime.Core.Interfaces;
 
 public interface ICacheProvider
 {
