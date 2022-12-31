@@ -34,10 +34,7 @@ public class LiteratureService : ILiteratureService
             );
         }
 
-        var literatureTimeHashesKey = $"{hour}:{minute}";
-        var literatureTimeHashes = _literatureIndexService.GetLiteratureTimeHashes(
-            literatureTimeHashesKey
-        );
+        var literatureTimeHashes = _literatureIndexService.GetLiteratureTimeHashes(hour, minute);
         if (literatureTimeHashes == null)
         {
             throw new ManagedresponseException(
@@ -55,13 +52,14 @@ public class LiteratureService : ILiteratureService
         }
 
         int index = new Random().Next(literatureTimeHashes.Count);
-        var literatureTimeHashKey = PrefixKey(literatureTimeHashes[index]);
+        var literatureTimeHash = literatureTimeHashes[index];
+        var literatureTimeHashKey = PrefixKey(literatureTimeHash);
         var literatureTime = await _cacheProvider.GetAsync<LiteratureTime>(literatureTimeHashKey);
         if (literatureTime == null)
         {
             throw new ManagedresponseException(
                 HttpStatusCode.NotFound,
-                $"The specified hour:{hour} and minute:{minute} was not found, key:{literatureTimeHashesKey}"
+                $"The specified hash:{literatureTimeHash} for hour:{hour} and minute:{minute} was not found, key:{literatureTimeHashKey}"
             );
         }
 

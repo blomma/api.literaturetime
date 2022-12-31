@@ -70,9 +70,10 @@ public class LiteratureIndexService : ILiteratureIndexService
         _logger.LogInformation("Done populating index");
     }
 
-    public List<string>? GetLiteratureTimeHashes(string time)
+    public List<string>? GetLiteratureTimeHashes(string hour, string minute)
     {
-        _ = LiteratureTimeHashesIndex.TryGetValue(time, out var result);
+        var literatureTimeHashesKey = $"{hour}:{minute}";
+        _ = LiteratureTimeHashesIndex.TryGetValue(literatureTimeHashesKey, out var result);
         return result;
     }
 }
