@@ -38,9 +38,6 @@ builder.Services.AddHttpLogging(logging =>
     logging.RequestHeaders.Add("X-Real-Ip");
     logging.RequestHeaders.Add("Upgrade-Insecure-Requests");
     logging.RequestHeaders.Add("traceparent");
-    logging.LoggingFields = HttpLoggingFields.All;
-    logging.RequestBodyLogLimit = 4096;
-    logging.ResponseBodyLogLimit = 4096;
 });
 
 var app = builder.Build();
