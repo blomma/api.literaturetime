@@ -27,6 +27,8 @@ builder.Services.AddRouterModules();
 
 builder.Services.AddManagedResponseException();
 
+builder.Services.AddMemoryCache();
+
 builder.Services.AddHttpLogging(logging =>
 {
     logging.RequestHeaders.Add("Referer");
@@ -52,6 +54,5 @@ if (app.Environment.IsDevelopment())
 
 app.UseManagedResponseException();
 app.UseRouterModules();
-app.UseStartupModules();
 
 app.Run();

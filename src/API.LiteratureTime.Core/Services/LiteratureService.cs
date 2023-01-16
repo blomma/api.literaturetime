@@ -5,21 +5,19 @@ using System.Net;
 using Irrbloss.Exceptions;
 using System.Threading.Tasks;
 using API.LiteratureTime.Core.Interfaces;
+using Microsoft.Extensions.Caching.Memory;
 
 public class LiteratureService : ILiteratureService
 {
     private const string KEY_PREFIX = "LIT_V3";
 
     private readonly ICacheProvider _cacheProvider;
-    private readonly ILiteratureIndexService _literatureIndexService;
+    private readonly IMemoryCache _memoryCache;
 
-    public LiteratureService(
-        ICacheProvider cacheProvider,
-        ILiteratureIndexService literatureIndexService
-    )
+    public LiteratureService(ICacheProvider cacheProvider, IMemoryCache memoryCache)
     {
         _cacheProvider = cacheProvider;
-        _literatureIndexService = literatureIndexService;
+        _memoryCache = memoryCache;
     }
 
     private static string PrefixKey(string key) => $"{KEY_PREFIX}:{key}";
@@ -34,7 +32,8 @@ public class LiteratureService : ILiteratureService
             );
         }
 
-        var literatureTimeHashes = _literatureIndexService.GetLiteratureTimeHashes(hour, minute);
+        var literatureTimeHashesKey = $"{hour}:{minute}";
+        var literatureTimeHashes = _memoryCache.Get<List<string>?>(literatureTimeHashesKey);
         if (literatureTimeHashes == null)
         {
             throw new ManagedresponseException(
