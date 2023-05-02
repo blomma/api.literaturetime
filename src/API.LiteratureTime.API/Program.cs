@@ -16,15 +16,12 @@ builder.Host.UseSerilog(
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddMvcCore();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddServiceModules(builder.Configuration);
 builder.Services.AddRouterModules();
-
-builder.Services.AddManagedResponseException();
 
 builder.Services.AddMemoryCache();
 
@@ -51,7 +48,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseManagedResponseException();
 app.UseRouterModules();
 
 app.Run();

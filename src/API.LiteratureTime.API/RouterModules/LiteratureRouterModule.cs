@@ -1,5 +1,6 @@
 namespace API.LiteratureTime.API.RouterModules;
 
+using global::API.LiteratureTime.API.Filters;
 using global::API.LiteratureTime.Core.Interfaces;
 using Irrbloss.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ public class LiteratureRouterModule : IRouterModule
                     return literatureService.GetRandomLiteratureTimeAsync(hour, minute);
                 }
             )
+            .AddEndpointFilter<ApiExceptionFilter>()
             .WithName("V2GetRandomLiteratureTime");
 
         app.MapGet(
@@ -29,6 +31,7 @@ public class LiteratureRouterModule : IRouterModule
                     return literatureService.GetLiteratureTimeAsync(hash);
                 }
             )
+            .AddEndpointFilter<ApiExceptionFilter>()
             .WithName("V2GetSpecificLiteratureTime");
     }
 }

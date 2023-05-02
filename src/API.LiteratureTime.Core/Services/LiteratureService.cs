@@ -26,7 +26,7 @@ public class LiteratureService : ILiteratureService
     {
         if (hour.Length != 2 || minute.Length != 2)
         {
-            throw new ManagedresponseException(
+            throw new ManagedResponseException(
                 HttpStatusCode.BadRequest,
                 $"The specified hour:{hour} and minute:{minute} was in the wrong format, both hour and minute needs to be padded with 0 for a length of 2"
             );
@@ -36,7 +36,7 @@ public class LiteratureService : ILiteratureService
         var literatureTimeHashes = _memoryCache.Get<List<string>?>(literatureTimeHashesKey);
         if (literatureTimeHashes == null)
         {
-            throw new ManagedresponseException(
+            throw new ManagedResponseException(
                 HttpStatusCode.NotFound,
                 $"The specified hour:{hour} and minute:{minute} was not found"
             );
@@ -44,7 +44,7 @@ public class LiteratureService : ILiteratureService
 
         if (literatureTimeHashes.Count == 0)
         {
-            throw new ManagedresponseException(
+            throw new ManagedResponseException(
                 HttpStatusCode.NotFound,
                 $"The specified hour:{hour} and minute:{minute} was not found"
             );
@@ -56,7 +56,7 @@ public class LiteratureService : ILiteratureService
         var literatureTime = await _cacheProvider.GetAsync<LiteratureTime>(literatureTimeHashKey);
         if (literatureTime == null)
         {
-            throw new ManagedresponseException(
+            throw new ManagedResponseException(
                 HttpStatusCode.NotFound,
                 $"The specified hash:{literatureTimeHash} for hour:{hour} and minute:{minute} was not found, key:{literatureTimeHashKey}"
             );
@@ -71,7 +71,7 @@ public class LiteratureService : ILiteratureService
         var result = await _cacheProvider.GetAsync<LiteratureTime>(key);
         if (result == null)
         {
-            throw new ManagedresponseException(
+            throw new ManagedResponseException(
                 HttpStatusCode.NotFound,
                 $"The specified hash:{hash} was not found, key:{key}"
             );
