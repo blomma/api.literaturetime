@@ -9,18 +9,21 @@ public class LiteratureRouterModule : IRouterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet(
-                "/api/2.0/literature/{hour}/{minute}",
+        var group = app.MapGroup("/api/2.0/literature").AddEndpointFilter<ApiExceptionFilter>();
+
+        group
+            .MapGet(
+                "/{hour}/{minute}",
                 ([FromServices] ILiteratureService literatureService, string hour, string minute) =>
                 {
                     return literatureService.GetRandomLiteratureTimeAsync(hour, minute);
                 }
             )
-            .AddEndpointFilter<ApiExceptionFilter>()
             .WithName("V2GetRandomLiteratureTime");
 
-        app.MapGet(
-                "/api/2.0/literature/{hour}/{minute}/{hash}",
+        group
+            .MapGet(
+                "/{hour}/{minute}/{hash}",
                 (
                     [FromServices] ILiteratureService literatureService,
                     string hour,
@@ -31,7 +34,6 @@ public class LiteratureRouterModule : IRouterModule
                     return literatureService.GetLiteratureTimeAsync(hash);
                 }
             )
-            .AddEndpointFilter<ApiExceptionFilter>()
             .WithName("V2GetSpecificLiteratureTime");
     }
 }
