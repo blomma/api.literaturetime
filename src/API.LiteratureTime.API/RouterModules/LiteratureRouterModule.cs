@@ -18,18 +18,16 @@ public class LiteratureRouterModule : IRouterModule
                 "/{hour}/{minute}",
                 (
                     [FromServices] ILiteratureService literatureService,
-                    [FromServices] IValidator<RandomLiteratureRequest> validator,
                     [AsParameters] RandomLiteratureRequest request
                 ) =>
                 {
-                    validator.ValidateAndThrow(request);
-
                     return literatureService.GetRandomLiteratureTimeAsync(
                         request.hour,
                         request.minute
                     );
                 }
             )
+            .AddEndpointFilter<ValidationFilter<RandomLiteratureRequest>>()
             .WithName("GetRandomLiteratureTime");
 
         group
@@ -37,15 +35,13 @@ public class LiteratureRouterModule : IRouterModule
                 "/{hash}",
                 (
                     [FromServices] ILiteratureService literatureService,
-                    [FromServices] IValidator<LiteratureRequest> validator,
                     [AsParameters] LiteratureRequest request
                 ) =>
                 {
-                    validator.ValidateAndThrow(request);
-
                     return literatureService.GetLiteratureTimeAsync(request.hash);
                 }
             )
+            .AddEndpointFilter<ValidationFilter<LiteratureRequest>>()
             .WithName("GetLiteratureTime");
     }
 }

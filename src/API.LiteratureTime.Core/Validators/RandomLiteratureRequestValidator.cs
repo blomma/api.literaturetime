@@ -1,13 +1,20 @@
 using API.LiteratureTime.Core.Models;
 using FluentValidation;
 
+namespace API.LiteratureTime.Core.Validators;
+
 public class RandomLiteratureRequestValidator : AbstractValidator<RandomLiteratureRequest>
 {
     public RandomLiteratureRequestValidator()
     {
+        RuleFor(x => x.hour).Length(2).WithMessage("'{PropertyName}' must be padded with 0");
+
         RuleFor(x => x.hour)
             .Must(BeAValidHour)
             .WithMessage("'{PropertyName}' must be between 0 and 23");
+
+        RuleFor(x => x.minute).Length(2).WithMessage("'{PropertyName}' must be padded with 0");
+
         RuleFor(x => x.minute)
             .Must(BeAValidMinute)
             .WithMessage("'{PropertyName}' must be between 0 and 59");

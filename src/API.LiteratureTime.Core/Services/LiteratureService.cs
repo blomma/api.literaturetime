@@ -24,14 +24,6 @@ public class LiteratureService : ILiteratureService
 
     public async Task<LiteratureTime> GetRandomLiteratureTimeAsync(string hour, string minute)
     {
-        if (hour.Length != 2 || minute.Length != 2)
-        {
-            throw new ManagedResponseException(
-                HttpStatusCode.BadRequest,
-                $"The specified hour:{hour} and minute:{minute} was in the wrong format, both hour and minute needs to be padded with 0 for a length of 2"
-            );
-        }
-
         var literatureTimeHashesKey = $"{hour}:{minute}";
         var literatureTimeHashes = _memoryCache.Get<List<string>?>(literatureTimeHashesKey);
         if (literatureTimeHashes == null)
