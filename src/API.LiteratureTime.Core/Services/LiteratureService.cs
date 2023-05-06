@@ -25,14 +25,12 @@ public class LiteratureService : ILiteratureService
     public async Task<LiteratureTime> GetRandomLiteratureTimeAsync(string hour, string minute)
     {
         var literatureTimeHashesKey = $"{hour}:{minute}";
-        var literatureTimeHashes = _memoryCache.Get<List<string>?>(literatureTimeHashesKey);
-        if (literatureTimeHashes == null)
-        {
-            throw new ManagedResponseException(
+        var literatureTimeHashes =
+            _memoryCache.Get<List<string>?>(literatureTimeHashesKey)
+            ?? throw new ManagedResponseException(
                 HttpStatusCode.NotFound,
                 $"The specified hour:{hour} and minute:{minute} was not found"
             );
-        }
 
         if (literatureTimeHashes.Count == 0)
         {
@@ -45,14 +43,12 @@ public class LiteratureService : ILiteratureService
         int index = new Random().Next(literatureTimeHashes.Count);
         var literatureTimeHash = literatureTimeHashes[index];
         var literatureTimeHashKey = PrefixKey(literatureTimeHash);
-        var literatureTime = await _cacheProvider.GetAsync<LiteratureTime>(literatureTimeHashKey);
-        if (literatureTime == null)
-        {
-            throw new ManagedResponseException(
+        var literatureTime =
+            await _cacheProvider.GetAsync<LiteratureTime>(literatureTimeHashKey)
+            ?? throw new ManagedResponseException(
                 HttpStatusCode.NotFound,
                 $"The specified hash:{literatureTimeHash} for hour:{hour} and minute:{minute} was not found, key:{literatureTimeHashKey}"
             );
-        }
 
         return literatureTime;
     }
@@ -60,14 +56,12 @@ public class LiteratureService : ILiteratureService
     public async Task<LiteratureTime> GetLiteratureTimeAsync(string hash)
     {
         var key = PrefixKey(hash);
-        var result = await _cacheProvider.GetAsync<LiteratureTime>(key);
-        if (result == null)
-        {
-            throw new ManagedResponseException(
+        var result =
+            await _cacheProvider.GetAsync<LiteratureTime>(key)
+            ?? throw new ManagedResponseException(
                 HttpStatusCode.NotFound,
                 $"The specified hash:{hash} was not found, key:{key}"
             );
-        }
 
         return result;
     }

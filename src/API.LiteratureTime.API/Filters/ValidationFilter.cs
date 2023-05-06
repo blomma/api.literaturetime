@@ -17,9 +17,7 @@ public class ValidationFilter<T> : IEndpointFilter
         EndpointFilterDelegate next
     )
     {
-        var obj = context.Arguments.FirstOrDefault(x => x?.GetType() == typeof(T)) as T;
-
-        if (obj is null)
+        if (context.Arguments.FirstOrDefault(x => x?.GetType() == typeof(T)) is not T obj)
         {
             return Results.BadRequest();
         }
