@@ -22,8 +22,8 @@ public class LiteratureRouterModule : IRouterModule
                 ) =>
                 {
                     return literatureService.GetRandomLiteratureTimeAsync(
-                        request.hour,
-                        request.minute
+                        request.Hour,
+                        request.Minute
                     );
                 }
             )
@@ -38,7 +38,7 @@ public class LiteratureRouterModule : IRouterModule
                     [AsParameters] LiteratureRequest request
                 ) =>
                 {
-                    return literatureService.GetLiteratureTimeAsync(request.hash);
+                    return literatureService.GetLiteratureTimeAsync(request.Hash);
                 }
             )
             .AddEndpointFilter<ValidationFilter<LiteratureRequest>>()

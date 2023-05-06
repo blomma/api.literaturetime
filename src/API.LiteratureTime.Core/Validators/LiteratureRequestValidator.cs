@@ -7,6 +7,6 @@ public class LiteratureRequestValidator : AbstractValidator<LiteratureRequest>
 {
     public LiteratureRequestValidator()
     {
-        RuleFor(x => x.hash).NotEmpty();
+        RuleFor(x => x.Hash).NotEmpty();
     }
 }

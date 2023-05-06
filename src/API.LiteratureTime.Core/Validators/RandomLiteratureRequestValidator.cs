@@ -7,15 +7,15 @@ public class RandomLiteratureRequestValidator : AbstractValidator<RandomLiteratu
 {
     public RandomLiteratureRequestValidator()
     {
-        RuleFor(x => x.hour).Length(2).WithMessage("'{PropertyName}' must be padded with 0");
+        RuleFor(x => x.Hour).Length(2).WithMessage("'{PropertyName}' must be padded with 0");
 
-        RuleFor(x => x.hour)
+        RuleFor(x => x.Hour)
             .Must(BeAValidHour)
             .WithMessage("'{PropertyName}' must be between 0 and 23");
 
-        RuleFor(x => x.minute).Length(2).WithMessage("'{PropertyName}' must be padded with 0");
+        RuleFor(x => x.Minute).Length(2).WithMessage("'{PropertyName}' must be padded with 0");
 
-        RuleFor(x => x.minute)
+        RuleFor(x => x.Minute)
             .Must(BeAValidMinute)
             .WithMessage("'{PropertyName}' must be between 0 and 59");
     }
