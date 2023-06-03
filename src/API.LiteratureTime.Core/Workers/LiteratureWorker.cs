@@ -35,15 +35,17 @@ public class LiteratureWorker : IHostedService
 
         using var scope = _serviceProvider.CreateScope();
         var cacheProvider = scope.ServiceProvider.GetRequiredService<ICacheProvider>();
-        var memoryCache = scope.ServiceProvider.GetRequiredService<IMemoryCache>();
 
         var literatureTimeIndex = await cacheProvider.GetAsync<List<LiteratureTimeIndex>>(
             $"{KEY_PREFIX}:{INDEXMARKER}"
         );
 
         if (literatureTimeIndex == null)
+        {
             return;
+        }
 
+        var memoryCache = scope.ServiceProvider.GetRequiredService<IMemoryCache>();
         var literatureTimeIndexKeys = memoryCache.Get<List<string>>($"{KEY_PREFIX}:{INDEXMARKER}");
         if (literatureTimeIndexKeys != null)
         {

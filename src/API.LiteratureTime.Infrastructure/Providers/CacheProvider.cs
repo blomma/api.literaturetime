@@ -18,7 +18,9 @@ public class CacheProvider : ICacheProvider
         var db = _connectionMultiplexer.GetDatabase();
         var data = await db.StringGetAsync(key);
         if (data.IsNull)
+        {
             return default;
+        }
 
         return JsonSerializer.Deserialize<T>(data.ToString());
     }
