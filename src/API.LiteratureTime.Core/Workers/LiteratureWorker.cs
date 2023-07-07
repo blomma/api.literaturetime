@@ -80,7 +80,9 @@ public class LiteratureWorker : IHostedService
         var connectionMultiplexer =
             scope.ServiceProvider.GetRequiredService<IConnectionMultiplexer>();
 
-        _channelMessageQueue = connectionMultiplexer.GetSubscriber().Subscribe("literature");
+        var redisChannel = RedisChannel.Literal("literature");
+        ISubscriber sub = connectionMultiplexer.GetSubscriber();
+        _channelMessageQueue = sub.Subscribe(redisChannel);
         _channelMessageQueue.OnMessage(message =>
         {
             _logger.LogInformation("Recieved message:{message}", message.Message);
