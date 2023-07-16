@@ -11,9 +11,7 @@ COPY ["src/API.LiteratureTime.API/API.LiteratureTime.API.csproj", "./src/API.Lit
 COPY ["src/API.LiteratureTime.Core/API.LiteratureTime.Core.csproj", "./src/API.LiteratureTime.Core/"]
 COPY ["src/API.LiteratureTime.Infrastructure/API.LiteratureTime.Infrastructure.csproj", "./src/API.LiteratureTime.Infrastructure/"]
 COPY ["src/Irrbloss/Irrbloss.csproj", "./src/Irrbloss/"]
-RUN dotnet restore
 COPY . .
-RUN dotnet build -c Release -o /app/build
 
 FROM build AS publish
 WORKDIR "/src/API.LiteratureTime.API/."
