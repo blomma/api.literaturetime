@@ -29,7 +29,7 @@ public class LiteratureWorker : IHostedService
         _handleBlock = new(async f => await f());
     }
 
-    public async Task PopulateIndexAsync()
+    private async Task PopulateIndexAsync()
     {
         _logger.LogInformation("Populating index");
 
