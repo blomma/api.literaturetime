@@ -1,7 +1,7 @@
 namespace API.LiteratureTime.Infrastructure.Providers;
 
 using System.Text.Json;
-using API.LiteratureTime.Core.Interfaces;
+using Core.Interfaces;
 using StackExchange.Redis;
 
 public class CacheProvider : ICacheProvider
@@ -17,11 +17,6 @@ public class CacheProvider : ICacheProvider
     {
         var db = _connectionMultiplexer.GetDatabase();
         var data = await db.StringGetAsync(key);
-        if (data.IsNull)
-        {
-            return default;
-        }
-
-        return JsonSerializer.Deserialize<T>(data.ToString());
+        return data.IsNull ? default : JsonSerializer.Deserialize<T>(data.ToString());
     }
 }

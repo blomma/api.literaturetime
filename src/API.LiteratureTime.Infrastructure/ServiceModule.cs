@@ -10,10 +10,9 @@ public class ServiceModule : IServiceModule
     public void AddServices(IServiceCollection service, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("Redis") ?? throw new Exception();
-        service.AddSingleton<IConnectionMultiplexer>(c =>
-        {
-            return ConnectionMultiplexer.Connect(connectionString);
-        });
+        service.AddSingleton<IConnectionMultiplexer>(
+            c => ConnectionMultiplexer.Connect(connectionString)
+        );
 
         service.AddTransient<Core.Interfaces.ICacheProvider, Providers.CacheProvider>();
     }

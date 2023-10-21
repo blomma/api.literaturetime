@@ -1,9 +1,9 @@
 namespace API.LiteratureTime.API.RouterModules;
 
 using FluentValidation;
-using global::API.LiteratureTime.API.Filters;
-using global::API.LiteratureTime.Core.Interfaces;
-using global::API.LiteratureTime.Core.Models;
+using Filters;
+using Core.Interfaces;
+using Core.Models;
 using Irrbloss.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

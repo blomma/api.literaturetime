@@ -28,17 +28,14 @@ public class RandomLiteratureRequestValidator : AbstractValidator<RandomLiteratu
             return false;
         }
 
-        if (hourAsInteger < 0)
+        switch (hourAsInteger)
         {
-            return false;
+            case < 0:
+            case > 23:
+                return false;
+            default:
+                return true;
         }
-
-        if (hourAsInteger > 23)
-        {
-            return false;
-        }
-
-        return true;
     }
 
     private bool BeAValidMinute(string minute)
@@ -49,16 +46,13 @@ public class RandomLiteratureRequestValidator : AbstractValidator<RandomLiteratu
             return false;
         }
 
-        if (minuteAsInteger < 0)
+        switch (minuteAsInteger)
         {
-            return false;
+            case < 0:
+            case > 59:
+                return false;
+            default:
+                return true;
         }
-
-        if (minuteAsInteger > 59)
-        {
-            return false;
-        }
-
-        return true;
     }
 }

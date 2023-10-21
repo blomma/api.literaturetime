@@ -1,10 +1,10 @@
 namespace API.LiteratureTime.Core.Services;
 
-using API.LiteratureTime.Core.Models;
+using Models;
 using System.Net;
 using Irrbloss.Exceptions;
 using System.Threading.Tasks;
-using API.LiteratureTime.Core.Interfaces;
+using Interfaces;
 using Microsoft.Extensions.Caching.Memory;
 
 public class LiteratureService : ILiteratureService

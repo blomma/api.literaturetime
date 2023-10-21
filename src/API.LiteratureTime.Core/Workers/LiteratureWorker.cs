@@ -3,8 +3,8 @@ namespace API.LiteratureTime.Core.Workers;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-using API.LiteratureTime.Core.Interfaces;
-using API.LiteratureTime.Core.Models;
+using Interfaces;
+using Models;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -60,11 +60,13 @@ public class LiteratureWorker : IHostedService
         foreach (IGrouping<string, LiteratureTimeIndex> literatureTimesIndexGroup in lookup)
         {
             var hashes = literatureTimesIndexGroup.Select(s => s.Hash).ToList();
-            if (hashes != null)
+            if (hashes == null)
             {
-                memoryCache.Set(literatureTimesIndexGroup.Key, hashes);
-                literatureTimeIndexKeys.Add(literatureTimesIndexGroup.Key);
+                continue;
             }
+
+            memoryCache.Set(literatureTimesIndexGroup.Key, hashes);
+            literatureTimeIndexKeys.Add(literatureTimesIndexGroup.Key);
         }
 
         memoryCache.Set($"{KEY_PREFIX}:{INDEXMARKER}", literatureTimeIndexKeys);
@@ -81,11 +83,11 @@ public class LiteratureWorker : IHostedService
             scope.ServiceProvider.GetRequiredService<IConnectionMultiplexer>();
 
         var redisChannel = RedisChannel.Literal("literature");
-        ISubscriber sub = connectionMultiplexer.GetSubscriber();
+        var sub = connectionMultiplexer.GetSubscriber();
         _channelMessageQueue = sub.Subscribe(redisChannel);
         _channelMessageQueue.OnMessage(message =>
         {
-            _logger.LogInformation("Recieved message:{message}", message.Message);
+            _logger.LogInformation("Received message:{message}", message.Message);
 
             if (message.Message != "index")
                 return Task.CompletedTask;
@@ -98,9 +100,10 @@ public class LiteratureWorker : IHostedService
         return Task.CompletedTask;
     }
 
-    public async Task StopAsync(CancellationToken cancellationToken)
+    public Task StopAsync(CancellationToken cancellationToken)
     {
-        if (_channelMessageQueue != null)
-            await _channelMessageQueue.UnsubscribeAsync();
+        return _channelMessageQueue != null
+            ? _channelMessageQueue.UnsubscribeAsync()
+            : Task.CompletedTask;
     }
 }

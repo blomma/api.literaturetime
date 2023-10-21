@@ -22,7 +22,7 @@ public class ValidationFilter<T> : IEndpointFilter
             return Results.BadRequest();
         }
 
-        _validator.ValidateAndThrow(obj);
+        await _validator.ValidateAndThrowAsync(obj);
 
         return await next(context);
     }

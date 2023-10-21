@@ -1,6 +1,6 @@
 namespace API.LiteratureTime.Core.Interfaces;
 
-using API.LiteratureTime.Core.Models;
+using Models;
 
 public interface ILiteratureService
 {
