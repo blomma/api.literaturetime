@@ -15,14 +15,30 @@ public class LiteratureRouterModule : IRouterModule
 
         group
             .MapGet(
+                "/missing",
+                (
+                    [FromServices] ILiteratureService literatureService,
+                    [FromServices] ILogger<LiteratureRouterModule> logger
+                ) => literatureService.GetMissingLiteratureTimesAsync()
+            )
+            .WithName("GetMissingLiteratureTimes");
+
+        group
+            .MapGet(
+                "/",
+                ([FromServices] ILiteratureService literatureService) =>
+                    literatureService.GetLiteratureTimesAsync()
+            )
+            .WithName("GetLiteratureTimes");
+
+        group
+            .MapGet(
                 "/{hour}/{minute}",
                 (
                     [FromServices] ILiteratureService literatureService,
                     [AsParameters] RandomLiteratureRequest request
-                ) => literatureService.GetRandomLiteratureTimeAsync(
-                    request.Hour,
-                    request.Minute
-                ))
+                ) => literatureService.GetRandomLiteratureTimeAsync(request.Hour, request.Minute)
+            )
             .AddEndpointFilter<ValidationFilter<RandomLiteratureRequest>>()
             .WithName("GetRandomLiteratureTime");
 
@@ -32,7 +48,8 @@ public class LiteratureRouterModule : IRouterModule
                 (
                     [FromServices] ILiteratureService literatureService,
                     [AsParameters] LiteratureRequest request
-                ) => literatureService.GetLiteratureTimeAsync(request.Hash))
+                ) => literatureService.GetLiteratureTimeAsync(request.Hash)
+            )
             .AddEndpointFilter<ValidationFilter<LiteratureRequest>>()
             .WithName("GetLiteratureTime");
     }

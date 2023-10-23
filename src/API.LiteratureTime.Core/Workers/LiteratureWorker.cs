@@ -26,8 +26,8 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
 {
     private ChannelMessageQueue? _channelMessageQueue;
 
-    private const string KEY_PREFIX = "LIT_V3";
-    private const string INDEXMARKER = "INDEX";
+    private const string KeyPrefix = "LIT_V4";
+    private const string IndexMarker = "INDEX";
 
     private readonly ActionBlock<Func<Task>> _handleBlock = new(async f => await f());
 
@@ -39,7 +39,7 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
         var cacheProvider = scope.ServiceProvider.GetRequiredService<ICacheProvider>();
 
         var literatureTimeIndex = await cacheProvider.GetAsync<List<LiteratureTimeIndex>>(
-            $"{KEY_PREFIX}:{INDEXMARKER}"
+            $"{KeyPrefix}:{IndexMarker}"
         );
 
         if (literatureTimeIndex == null)
@@ -48,7 +48,7 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
         }
 
         var memoryCache = scope.ServiceProvider.GetRequiredService<IMemoryCache>();
-        var literatureTimeIndexKeys = memoryCache.Get<List<string>>($"{KEY_PREFIX}:{INDEXMARKER}");
+        var literatureTimeIndexKeys = memoryCache.Get<List<string>>($"{KeyPrefix}:{IndexMarker}");
         if (literatureTimeIndexKeys != null)
         {
             foreach (var key in literatureTimeIndexKeys)
@@ -66,7 +66,7 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
             literatureTimeIndexKeys.Add(literatureTimesIndexGroup.Key);
         }
 
-        memoryCache.Set($"{KEY_PREFIX}:{INDEXMARKER}", literatureTimeIndexKeys);
+        memoryCache.Set($"{KeyPrefix}:{IndexMarker}", literatureTimeIndexKeys);
 
         logger.LogInformation("Done populating index");
     }
@@ -86,7 +86,9 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
         _channelMessageQueue.OnMessage(message =>
         {
             LiteratureWorkerLog.ReceivedMessage(logger, message.Message.ToString());
-            if (message.Message == "index")
+
+            const string messageKey = $"{KeyPrefix}:index";
+            if (message.Message == messageKey)
             {
                 _handleBlock.Post(PopulateIndexAsync);
             }
