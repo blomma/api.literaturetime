@@ -12,16 +12,13 @@ public class LiteratureService(ICacheProvider cacheProvider, IMemoryCache memory
 {
     private const string KEY_PREFIX = "LIT_V3";
 
-    private readonly ICacheProvider _cacheProvider = cacheProvider;
-    private readonly IMemoryCache _memoryCache = memoryCache;
-
     private static string PrefixKey(string key) => $"{KEY_PREFIX}:{key}";
 
     public async Task<LiteratureTime> GetRandomLiteratureTimeAsync(string hour, string minute)
     {
         var literatureTimeHashesKey = $"{hour}:{minute}";
         var literatureTimeHashes =
-            _memoryCache.Get<List<string>?>(literatureTimeHashesKey)
+            memoryCache.Get<List<string>?>(literatureTimeHashesKey)
             ?? throw new ManagedResponseException(
                 HttpStatusCode.NotFound,
                 $"The specified hour:{hour} and minute:{minute} was not found"
@@ -39,7 +36,7 @@ public class LiteratureService(ICacheProvider cacheProvider, IMemoryCache memory
         var literatureTimeHash = literatureTimeHashes[index];
         var literatureTimeHashKey = PrefixKey(literatureTimeHash);
         var literatureTime =
-            await _cacheProvider.GetAsync<LiteratureTime>(literatureTimeHashKey)
+            await cacheProvider.GetAsync<LiteratureTime>(literatureTimeHashKey)
             ?? throw new ManagedResponseException(
                 HttpStatusCode.NotFound,
                 $"The specified hash:{literatureTimeHash} for hour:{hour} and minute:{minute} was not found, key:{literatureTimeHashKey}"
@@ -52,7 +49,7 @@ public class LiteratureService(ICacheProvider cacheProvider, IMemoryCache memory
     {
         var key = PrefixKey(hash);
         var result =
-            await _cacheProvider.GetAsync<LiteratureTime>(key)
+            await cacheProvider.GetAsync<LiteratureTime>(key)
             ?? throw new ManagedResponseException(
                 HttpStatusCode.NotFound,
                 $"The specified hash:{hash} was not found, key:{key}"

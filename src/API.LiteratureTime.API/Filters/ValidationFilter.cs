@@ -5,8 +5,6 @@ namespace API.LiteratureTime.API.Filters;
 public class ValidationFilter<T>(IValidator<T> validator) : IEndpointFilter
     where T : class
 {
-    private readonly IValidator<T> _validator = validator;
-
     public async ValueTask<object?> InvokeAsync(
         EndpointFilterInvocationContext context,
         EndpointFilterDelegate next
@@ -17,7 +15,7 @@ public class ValidationFilter<T>(IValidator<T> validator) : IEndpointFilter
             return Results.BadRequest();
         }
 
-        await _validator.ValidateAndThrowAsync(obj);
+        await validator.ValidateAndThrowAsync(obj);
 
         return await next(context);
     }

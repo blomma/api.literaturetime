@@ -14,8 +14,6 @@ using StackExchange.Redis;
 public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider serviceProvider)
     : IHostedService
 {
-    private readonly ILogger<LiteratureWorker> _logger = logger;
-    private readonly IServiceProvider _serviceProvider = serviceProvider;
     private ChannelMessageQueue? _channelMessageQueue;
 
     private const string KEY_PREFIX = "LIT_V3";
@@ -25,9 +23,9 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
 
     private async Task PopulateIndexAsync()
     {
-        _logger.LogInformation("Populating index");
+        logger.LogInformation("Populating index");
 
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = serviceProvider.CreateScope();
         var cacheProvider = scope.ServiceProvider.GetRequiredService<ICacheProvider>();
 
         var literatureTimeIndex = await cacheProvider.GetAsync<List<LiteratureTimeIndex>>(
@@ -65,14 +63,14 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
 
         memoryCache.Set($"{KEY_PREFIX}:{INDEXMARKER}", literatureTimeIndexKeys);
 
-        _logger.LogInformation("Done populating index");
+        logger.LogInformation("Done populating index");
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _handleBlock.Post(PopulateIndexAsync);
 
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = serviceProvider.CreateScope();
         var connectionMultiplexer = scope
             .ServiceProvider
             .GetRequiredService<IConnectionMultiplexer>();
@@ -82,7 +80,7 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
         _channelMessageQueue = sub.Subscribe(redisChannel);
         _channelMessageQueue.OnMessage(message =>
         {
-            _logger.LogInformation("Received message:{message}", message.Message);
+            logger.LogInformation("Received message:{message}", message.Message);
 
             if (message.Message != "index")
                 return Task.CompletedTask;
