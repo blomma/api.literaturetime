@@ -4,30 +4,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Interfaces;
-using Models;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Models;
 using StackExchange.Redis;
 
-public class LiteratureWorker : IHostedService
+public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider serviceProvider)
+    : IHostedService
 {
-    private readonly ILogger<LiteratureWorker> _logger;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger<LiteratureWorker> _logger = logger;
+    private readonly IServiceProvider _serviceProvider = serviceProvider;
     private ChannelMessageQueue? _channelMessageQueue;
 
     private const string KEY_PREFIX = "LIT_V3";
     private const string INDEXMARKER = "INDEX";
 
-    private readonly ActionBlock<Func<Task>> _handleBlock;
-
-    public LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider serviceProvider)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-        _handleBlock = new(async f => await f());
-    }
+    private readonly ActionBlock<Func<Task>> _handleBlock = new(async f => await f());
 
     private async Task PopulateIndexAsync()
     {
@@ -56,7 +50,7 @@ public class LiteratureWorker : IHostedService
         }
 
         var lookup = literatureTimeIndex.ToLookup(t => t.Time);
-        literatureTimeIndexKeys = new();
+        literatureTimeIndexKeys =  [ ];
         foreach (IGrouping<string, LiteratureTimeIndex> literatureTimesIndexGroup in lookup)
         {
             var hashes = literatureTimesIndexGroup.Select(s => s.Hash).ToList();
@@ -79,8 +73,9 @@ public class LiteratureWorker : IHostedService
         _handleBlock.Post(PopulateIndexAsync);
 
         using var scope = _serviceProvider.CreateScope();
-        var connectionMultiplexer =
-            scope.ServiceProvider.GetRequiredService<IConnectionMultiplexer>();
+        var connectionMultiplexer = scope
+            .ServiceProvider
+            .GetRequiredService<IConnectionMultiplexer>();
 
         var redisChannel = RedisChannel.Literal("literature");
         var sub = connectionMultiplexer.GetSubscriber();

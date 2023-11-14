@@ -4,14 +4,9 @@ using System.Text.Json;
 using Core.Interfaces;
 using StackExchange.Redis;
 
-public class CacheProvider : ICacheProvider
+public class CacheProvider(IConnectionMultiplexer connectionMultiplexer) : ICacheProvider
 {
-    private readonly IConnectionMultiplexer _connectionMultiplexer;
-
-    public CacheProvider(IConnectionMultiplexer connectionMultiplexer)
-    {
-        _connectionMultiplexer = connectionMultiplexer;
-    }
+    private readonly IConnectionMultiplexer _connectionMultiplexer = connectionMultiplexer;
 
     public async Task<T?> GetAsync<T>(string key)
     {

@@ -1,24 +1,19 @@
 namespace API.LiteratureTime.Core.Services;
 
-using Models;
 using System.Net;
-using Irrbloss.Exceptions;
 using System.Threading.Tasks;
 using Interfaces;
+using Irrbloss.Exceptions;
 using Microsoft.Extensions.Caching.Memory;
+using Models;
 
-public class LiteratureService : ILiteratureService
+public class LiteratureService(ICacheProvider cacheProvider, IMemoryCache memoryCache)
+    : ILiteratureService
 {
     private const string KEY_PREFIX = "LIT_V3";
 
-    private readonly ICacheProvider _cacheProvider;
-    private readonly IMemoryCache _memoryCache;
-
-    public LiteratureService(ICacheProvider cacheProvider, IMemoryCache memoryCache)
-    {
-        _cacheProvider = cacheProvider;
-        _memoryCache = memoryCache;
-    }
+    private readonly ICacheProvider _cacheProvider = cacheProvider;
+    private readonly IMemoryCache _memoryCache = memoryCache;
 
     private static string PrefixKey(string key) => $"{KEY_PREFIX}:{key}";
 

@@ -28,14 +28,11 @@ public class RandomLiteratureRequestValidator : AbstractValidator<RandomLiteratu
             return false;
         }
 
-        switch (hourAsInteger)
+        return hourAsInteger switch
         {
-            case < 0:
-            case > 23:
-                return false;
-            default:
-                return true;
-        }
+            < 0 or > 23 => false,
+            _ => true,
+        };
     }
 
     private bool BeAValidMinute(string minute)
