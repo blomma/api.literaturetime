@@ -19,14 +19,10 @@ public class LiteratureRouterModule : IRouterModule
                 (
                     [FromServices] ILiteratureService literatureService,
                     [AsParameters] RandomLiteratureRequest request
-                ) =>
-                {
-                    return literatureService.GetRandomLiteratureTimeAsync(
-                        request.Hour,
-                        request.Minute
-                    );
-                }
-            )
+                ) => literatureService.GetRandomLiteratureTimeAsync(
+                    request.Hour,
+                    request.Minute
+                ))
             .AddEndpointFilter<ValidationFilter<RandomLiteratureRequest>>()
             .WithName("GetRandomLiteratureTime");
 
@@ -36,11 +32,7 @@ public class LiteratureRouterModule : IRouterModule
                 (
                     [FromServices] ILiteratureService literatureService,
                     [AsParameters] LiteratureRequest request
-                ) =>
-                {
-                    return literatureService.GetLiteratureTimeAsync(request.Hash);
-                }
-            )
+                ) => literatureService.GetLiteratureTimeAsync(request.Hash))
             .AddEndpointFilter<ValidationFilter<LiteratureRequest>>()
             .WithName("GetLiteratureTime");
     }

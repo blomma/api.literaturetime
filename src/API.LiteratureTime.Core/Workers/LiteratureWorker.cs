@@ -11,6 +11,16 @@ using Microsoft.Extensions.Logging;
 using Models;
 using StackExchange.Redis;
 
+public static partial class LiteratureWorkerLog
+{
+    [LoggerMessage(
+        EventId = 0,
+        Level = LogLevel.Information,
+        Message = "Received message:{message}"
+    )]
+    public static partial void ReceivedMessage(ILogger logger, string message);
+}
+
 public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider serviceProvider)
     : IHostedService
 {
@@ -49,14 +59,9 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
 
         var lookup = literatureTimeIndex.ToLookup(t => t.Time);
         literatureTimeIndexKeys =  [ ];
-        foreach (IGrouping<string, LiteratureTimeIndex> literatureTimesIndexGroup in lookup)
+        foreach (var literatureTimesIndexGroup in lookup)
         {
             var hashes = literatureTimesIndexGroup.Select(s => s.Hash).ToList();
-            if (hashes == null)
-            {
-                continue;
-            }
-
             memoryCache.Set(literatureTimesIndexGroup.Key, hashes);
             literatureTimeIndexKeys.Add(literatureTimesIndexGroup.Key);
         }
@@ -80,12 +85,11 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
         _channelMessageQueue = sub.Subscribe(redisChannel);
         _channelMessageQueue.OnMessage(message =>
         {
-            logger.LogInformation("Received message:{message}", message.Message);
-
-            if (message.Message != "index")
-                return Task.CompletedTask;
-
-            _handleBlock.Post(PopulateIndexAsync);
+            LiteratureWorkerLog.ReceivedMessage(logger, message.Message.ToString());
+            if (message.Message == "index")
+            {
+                _handleBlock.Post(PopulateIndexAsync);
+            }
 
             return Task.CompletedTask;
         });

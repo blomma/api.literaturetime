@@ -32,7 +32,7 @@ public class LiteratureService(ICacheProvider cacheProvider, IMemoryCache memory
             );
         }
 
-        int index = new Random().Next(literatureTimeHashes.Count);
+        var index = new Random().Next(literatureTimeHashes.Count);
         var literatureTimeHash = literatureTimeHashes[index];
         var literatureTimeHashKey = PrefixKey(literatureTimeHash);
         var literatureTime =

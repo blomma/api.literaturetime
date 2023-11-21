@@ -20,10 +20,9 @@ public class RandomLiteratureRequestValidator : AbstractValidator<RandomLiteratu
             .WithMessage("'{PropertyName}' must be between 0 and 59");
     }
 
-    private bool BeAValidHour(string hour)
+    private static bool BeAValidHour(string hour)
     {
-        var result = int.TryParse(hour, out int hourAsInteger);
-        if (!result)
+        if (!int.TryParse(hour, out var hourAsInteger))
         {
             return false;
         }
@@ -35,21 +34,17 @@ public class RandomLiteratureRequestValidator : AbstractValidator<RandomLiteratu
         };
     }
 
-    private bool BeAValidMinute(string minute)
+    private static bool BeAValidMinute(string minute)
     {
-        var result = int.TryParse(minute, out int minuteAsInteger);
-        if (!result)
+        if (!int.TryParse(minute, out var minuteAsInteger))
         {
             return false;
         }
 
-        switch (minuteAsInteger)
+        return minuteAsInteger switch
         {
-            case < 0:
-            case > 59:
-                return false;
-            default:
-                return true;
-        }
+            < 0 or > 59 => false,
+            _ => true,
+        };
     }
 }
