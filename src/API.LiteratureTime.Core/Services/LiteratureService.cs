@@ -1,5 +1,6 @@
 namespace API.LiteratureTime.Core.Services;
 
+using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
 using Interfaces;
@@ -10,7 +11,7 @@ using Models;
 public class LiteratureService(ICacheProvider cacheProvider, IMemoryCache memoryCache)
     : ILiteratureService
 {
-    private const string KeyPrefix = "LIT_V4";
+    private const string KeyPrefix = "LIT_V3";
     private const string IndexMarker = "INDEX";
 
     private static string PrefixKey(string key) => $"{KeyPrefix}:{key}";
@@ -24,7 +25,7 @@ public class LiteratureService(ICacheProvider cacheProvider, IMemoryCache memory
         List<string> literatureTimes = new();
         while (startOfDay < endOfDay)
         {
-            literatureTimes.Add(startOfDay.ToString("HH:mm"));
+            literatureTimes.Add(startOfDay.ToString("HH:mm", CultureInfo.InvariantCulture));
             startOfDay = startOfDay.AddMinutes(1);
         }
 

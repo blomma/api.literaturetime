@@ -19,6 +19,13 @@ public static partial class LiteratureWorkerLog
         Message = "Received message:{message}"
     )]
     public static partial void ReceivedMessage(ILogger logger, string message);
+
+    [LoggerMessage(
+        EventId = 1,
+        Level = LogLevel.Information,
+        Message = "Populating index:{message}"
+    )]
+    public static partial void PopulatingIndex(ILogger logger, string message);
 }
 
 public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider serviceProvider)
@@ -26,14 +33,14 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
 {
     private ChannelMessageQueue? _channelMessageQueue;
 
-    private const string KeyPrefix = "LIT_V4";
+    private const string KeyPrefix = "LIT_V3";
     private const string IndexMarker = "INDEX";
 
     private readonly ActionBlock<Func<Task>> _handleBlock = new(async f => await f());
 
     private async Task PopulateIndexAsync()
     {
-        logger.LogInformation("Populating index");
+        LiteratureWorkerLog.PopulatingIndex(logger, "Start");
 
         using var scope = serviceProvider.CreateScope();
         var cacheProvider = scope.ServiceProvider.GetRequiredService<ICacheProvider>();
@@ -68,10 +75,10 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
 
         memoryCache.Set($"{KeyPrefix}:{IndexMarker}", literatureTimeIndexKeys);
 
-        logger.LogInformation("Done populating index");
+        LiteratureWorkerLog.PopulatingIndex(logger, "Done");
     }
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
         _handleBlock.Post(PopulateIndexAsync);
 
@@ -82,7 +89,7 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
 
         var redisChannel = RedisChannel.Literal("literature");
         var sub = connectionMultiplexer.GetSubscriber();
-        _channelMessageQueue = sub.Subscribe(redisChannel);
+        _channelMessageQueue = await sub.SubscribeAsync(redisChannel);
         _channelMessageQueue.OnMessage(message =>
         {
             LiteratureWorkerLog.ReceivedMessage(logger, message.Message.ToString());
@@ -96,7 +103,7 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
             return Task.CompletedTask;
         });
 
-        return Task.CompletedTask;
+        return;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

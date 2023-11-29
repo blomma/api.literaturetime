@@ -1,5 +1,6 @@
 namespace API.LiteratureTime.Infrastructure;
 
+using Irrbloss.Exceptions;
 using Irrbloss.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +10,12 @@ public class ServiceModule : IServiceModule
 {
     public void AddServices(IServiceCollection service, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("Redis") ?? throw new Exception();
+        var connectionString =
+            configuration.GetConnectionString("Redis")
+            ?? throw new ManagedResponseException(
+                System.Net.HttpStatusCode.InternalServerError,
+                "Invalid ConnectionString for redis"
+            );
         service.AddSingleton<IConnectionMultiplexer>(
             c => ConnectionMultiplexer.Connect(connectionString)
         );
