@@ -22,7 +22,7 @@ public class LiteratureService(ICacheProvider cacheProvider, IMemoryCache memory
         var startOfDay = DateTime.Now.Date;
         var endOfDay = startOfDay.Date.AddDays(1).AddTicks(-1);
 
-        List<string> literatureTimes = new();
+        List<string> literatureTimes = [];
         while (startOfDay < endOfDay)
         {
             literatureTimes.Add(startOfDay.ToString("HH:mm", CultureInfo.InvariantCulture));
@@ -34,9 +34,7 @@ public class LiteratureService(ICacheProvider cacheProvider, IMemoryCache memory
             return literatureTimes;
         }
 
-        var a = literatureTimes.Except(literatureTimeIndexKeys).ToList();
-
-        return a;
+        return literatureTimes.Except(literatureTimeIndexKeys).ToList();
     }
 
     public async Task<List<LiteratureTime>> GetLiteratureTimesAsync()
@@ -44,10 +42,10 @@ public class LiteratureService(ICacheProvider cacheProvider, IMemoryCache memory
         var literatureTimeIndexKeys = memoryCache.Get<List<string>>($"{KeyPrefix}:{IndexMarker}");
         if (literatureTimeIndexKeys == null)
         {
-            return new List<LiteratureTime>();
+            return [];
         }
 
-        List<LiteratureTime> literatureTimes = new();
+        List<LiteratureTime> literatureTimes = [];
         foreach (var key in literatureTimeIndexKeys)
         {
             var literatureTimeHashes =
