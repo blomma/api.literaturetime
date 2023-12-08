@@ -51,6 +51,7 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
 
         if (literatureTimeIndex == null)
         {
+            LiteratureWorkerLog.PopulatingIndex(logger, "Not found");
             return;
         }
 
@@ -65,7 +66,7 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
         }
 
         var lookup = literatureTimeIndex.ToLookup(t => t.Time);
-        literatureTimeIndexKeys =  [ ];
+        literatureTimeIndexKeys =  [];
         foreach (var literatureTimesIndexGroup in lookup)
         {
             var hashes = literatureTimesIndexGroup.Select(s => s.Hash).ToList();
