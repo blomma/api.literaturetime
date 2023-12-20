@@ -20,8 +20,7 @@ public class ApiExceptionFilter : IEndpointFilter
         }
         catch (ValidationException ex)
         {
-            var errors = ex.Errors
-                .GroupBy(e => e.PropertyName, e => e.ErrorMessage)
+            var errors = ex.Errors.GroupBy(e => e.PropertyName, e => e.ErrorMessage)
                 .ToDictionary(
                     failureGroup => failureGroup.Key,
                     failureGroup => failureGroup.ToArray()
