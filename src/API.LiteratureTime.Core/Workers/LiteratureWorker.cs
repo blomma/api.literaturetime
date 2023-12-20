@@ -36,6 +36,8 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
     private const string KeyPrefix = "LIT_V3";
     private const string IndexMarker = "INDEX";
 
+    private static string PrefixKey(string key) => $"{KeyPrefix}:{key}";
+
     private readonly ActionBlock<Func<Task>> _handleBlock = new(async f => await f());
 
     private async Task PopulateIndexAsync()
@@ -45,9 +47,8 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
         using var scope = serviceProvider.CreateScope();
         var cacheProvider = scope.ServiceProvider.GetRequiredService<ICacheProvider>();
 
-        var literatureTimeIndex = await cacheProvider.GetAsync<List<LiteratureTimeIndex>>(
-            $"{KeyPrefix}:{IndexMarker}"
-        );
+        var indexKey = PrefixKey(IndexMarker);
+        var literatureTimeIndex = await cacheProvider.GetAsync<List<LiteratureTimeIndex>>(indexKey);
 
         if (literatureTimeIndex == null)
         {
@@ -56,7 +57,7 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
         }
 
         var memoryCache = scope.ServiceProvider.GetRequiredService<IMemoryCache>();
-        var literatureTimeIndexKeys = memoryCache.Get<List<string>>($"{KeyPrefix}:{IndexMarker}");
+        var literatureTimeIndexKeys = memoryCache.Get<List<string>>(indexKey);
         if (literatureTimeIndexKeys != null)
         {
             foreach (var key in literatureTimeIndexKeys)
@@ -66,7 +67,7 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
         }
 
         var lookup = literatureTimeIndex.ToLookup(t => t.Time);
-        literatureTimeIndexKeys =  [];
+        literatureTimeIndexKeys = [];
         foreach (var literatureTimesIndexGroup in lookup)
         {
             var hashes = literatureTimesIndexGroup.Select(s => s.Hash).ToList();
@@ -74,19 +75,16 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
             literatureTimeIndexKeys.Add(literatureTimesIndexGroup.Key);
         }
 
-        memoryCache.Set($"{KeyPrefix}:{IndexMarker}", literatureTimeIndexKeys);
+        memoryCache.Set(indexKey, literatureTimeIndexKeys);
 
         LiteratureWorkerLog.PopulatingIndex(logger, "Done");
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        _handleBlock.Post(PopulateIndexAsync);
-
         using var scope = serviceProvider.CreateScope();
-        var connectionMultiplexer = scope
-            .ServiceProvider
-            .GetRequiredService<IConnectionMultiplexer>();
+        var connectionMultiplexer =
+            scope.ServiceProvider.GetRequiredService<IConnectionMultiplexer>();
 
         var redisChannel = RedisChannel.Literal("literature");
         var sub = connectionMultiplexer.GetSubscriber();
@@ -95,7 +93,7 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
         {
             LiteratureWorkerLog.ReceivedMessage(logger, message.Message.ToString());
 
-            const string messageKey = $"{KeyPrefix}:index";
+            string messageKey = PrefixKey("index");
             if (message.Message == messageKey)
             {
                 _handleBlock.Post(PopulateIndexAsync);
@@ -103,6 +101,8 @@ public class LiteratureWorker(ILogger<LiteratureWorker> logger, IServiceProvider
 
             return Task.CompletedTask;
         });
+
+        _handleBlock.Post(PopulateIndexAsync);
 
         return;
     }
