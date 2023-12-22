@@ -16,7 +16,7 @@ public class LiteratureService(ICacheProvider cacheProvider, IMemoryCache memory
 
     private static string PrefixKey(string key) => $"{KeyPrefix}:{key}";
 
-    public List<string> GetMissingLiteratureTimesAsync()
+    public IEnumerable<string> GetMissingLiteratureTimesAsync()
     {
         var literatureTimeIndexKeys = memoryCache.Get<List<string>>($"{KeyPrefix}:{IndexMarker}");
         var startOfDay = DateTime.Now.Date;
