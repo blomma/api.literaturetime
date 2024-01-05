@@ -1,6 +1,5 @@
 namespace API.LiteratureTime.Core.Services;
 
-using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
 using Interfaces;
@@ -12,66 +11,8 @@ public class LiteratureService(ICacheProvider cacheProvider, IMemoryCache memory
     : ILiteratureService
 {
     private const string KeyPrefix = "LIT_V3";
-    private const string IndexMarker = "INDEX";
 
     private static string PrefixKey(string key) => $"{KeyPrefix}:{key}";
-
-    public IEnumerable<string> GetMissingLiteratureTimesAsync()
-    {
-        var literatureTimeIndexKeys = memoryCache.Get<List<string>>($"{KeyPrefix}:{IndexMarker}");
-        var startOfDay = DateTime.Now.Date;
-        var endOfDay = startOfDay.Date.AddDays(1).AddTicks(-1);
-
-        List<string> literatureTimes = [];
-        while (startOfDay < endOfDay)
-        {
-            literatureTimes.Add(startOfDay.ToString("HH:mm", CultureInfo.InvariantCulture));
-            startOfDay = startOfDay.AddMinutes(1);
-        }
-
-        if (literatureTimeIndexKeys == null)
-        {
-            return literatureTimes;
-        }
-
-        return literatureTimes.Except(literatureTimeIndexKeys).ToList();
-    }
-
-    public async Task<List<LiteratureTime>> GetLiteratureTimesAsync()
-    {
-        var literatureTimeIndexKeys = memoryCache.Get<List<string>>($"{KeyPrefix}:{IndexMarker}");
-        if (literatureTimeIndexKeys == null)
-        {
-            return [];
-        }
-
-        List<LiteratureTime> literatureTimes = [];
-        foreach (var key in literatureTimeIndexKeys)
-        {
-            var literatureTimeHashes =
-                memoryCache.Get<List<string>?>(key)
-                ?? throw new ManagedResponseException(
-                    HttpStatusCode.NotFound,
-                    $"The specified key:{key} was not found"
-                );
-
-            foreach (var literatureTimeHash in literatureTimeHashes)
-            {
-                var literatureTimeHashKey = PrefixKey(literatureTimeHash);
-
-                var literatureTime =
-                    await cacheProvider.GetAsync<LiteratureTime>(literatureTimeHashKey)
-                    ?? throw new ManagedResponseException(
-                        HttpStatusCode.NotFound,
-                        $"The specified hash:{literatureTimeHash} was not found, key:{literatureTimeHashKey}"
-                    );
-
-                literatureTimes.Add(literatureTime);
-            }
-        }
-
-        return literatureTimes;
-    }
 
     public async Task<LiteratureTime> GetRandomLiteratureTimeAsync(string hour, string minute)
     {

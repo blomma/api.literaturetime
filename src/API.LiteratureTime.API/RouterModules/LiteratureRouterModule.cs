@@ -15,24 +15,6 @@ public class LiteratureRouterModule : IRouterModule
 
         group
             .MapGet(
-                "/missing",
-                (
-                    [FromServices] ILiteratureService literatureService,
-                    [FromServices] ILogger<LiteratureRouterModule> logger
-                ) => literatureService.GetMissingLiteratureTimesAsync()
-            )
-            .WithName("GetMissingLiteratureTimes");
-
-        group
-            .MapGet(
-                "/",
-                ([FromServices] ILiteratureService literatureService) =>
-                    literatureService.GetLiteratureTimesAsync()
-            )
-            .WithName("GetLiteratureTimes");
-
-        group
-            .MapGet(
                 "/{hour}/{minute}",
                 (
                     [FromServices] ILiteratureService literatureService,
