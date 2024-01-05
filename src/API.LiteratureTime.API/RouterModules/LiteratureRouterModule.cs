@@ -1,11 +1,11 @@
-namespace API.LiteratureTime.API.RouterModules;
-
-using Core.Interfaces;
-using Core.Models;
-using Filters;
+using API.LiteratureTime.API.Filters;
+using API.LiteratureTime.Core.Interfaces;
+using API.LiteratureTime.Core.Models;
 using FluentValidation;
 using Irrbloss.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+
+namespace API.LiteratureTime.API.RouterModules;
 
 public class LiteratureRouterModule : IRouterModule
 {

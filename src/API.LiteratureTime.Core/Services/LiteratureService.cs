@@ -1,11 +1,9 @@
-namespace API.LiteratureTime.Core.Services;
-
 using System.Net;
-using System.Threading.Tasks;
-using Interfaces;
+using API.LiteratureTime.Core.Interfaces;
 using Irrbloss.Exceptions;
 using Microsoft.Extensions.Caching.Memory;
-using Models;
+
+namespace API.LiteratureTime.Core.Services;
 
 public class LiteratureService(ICacheProvider cacheProvider, IMemoryCache memoryCache)
     : ILiteratureService
@@ -14,7 +12,10 @@ public class LiteratureService(ICacheProvider cacheProvider, IMemoryCache memory
 
     private static string PrefixKey(string key) => $"{KeyPrefix}:{key}";
 
-    public async Task<LiteratureTime> GetRandomLiteratureTimeAsync(string hour, string minute)
+    public async Task<Models.LiteratureTime> GetRandomLiteratureTimeAsync(
+        string hour,
+        string minute
+    )
     {
         var literatureTimeHashesKey = $"{hour}:{minute}";
         var literatureTimeHashes =
@@ -36,7 +37,7 @@ public class LiteratureService(ICacheProvider cacheProvider, IMemoryCache memory
         var literatureTimeHash = literatureTimeHashes[index];
         var literatureTimeHashKey = PrefixKey(literatureTimeHash);
         var literatureTime =
-            await cacheProvider.GetAsync<LiteratureTime>(literatureTimeHashKey)
+            await cacheProvider.GetAsync<Models.LiteratureTime>(literatureTimeHashKey)
             ?? throw new ManagedResponseException(
                 HttpStatusCode.NotFound,
                 $"The specified hash:{literatureTimeHash} for hour:{hour} and minute:{minute} was not found, key:{literatureTimeHashKey}"
@@ -45,11 +46,11 @@ public class LiteratureService(ICacheProvider cacheProvider, IMemoryCache memory
         return literatureTime;
     }
 
-    public async Task<LiteratureTime> GetLiteratureTimeAsync(string hash)
+    public async Task<Models.LiteratureTime> GetLiteratureTimeAsync(string hash)
     {
         var key = PrefixKey(hash);
         var result =
-            await cacheProvider.GetAsync<LiteratureTime>(key)
+            await cacheProvider.GetAsync<Models.LiteratureTime>(key)
             ?? throw new ManagedResponseException(
                 HttpStatusCode.NotFound,
                 $"The specified hash:{hash} was not found, key:{key}"

@@ -1,10 +1,10 @@
-namespace API.LiteratureTime.Infrastructure;
-
 using Irrbloss.Exceptions;
 using Irrbloss.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
+
+namespace API.LiteratureTime.Infrastructure;
 
 public class ServiceModule : IServiceModule
 {

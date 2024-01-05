@@ -1,15 +1,13 @@
-namespace API.LiteratureTime.Core.Workers;
-
-using System.Threading;
-using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-using Interfaces;
+using API.LiteratureTime.Core.Interfaces;
+using API.LiteratureTime.Core.Models;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Models;
 using StackExchange.Redis;
+
+namespace API.LiteratureTime.Core.Workers;
 
 public static partial class LiteratureWorkerLog
 {
