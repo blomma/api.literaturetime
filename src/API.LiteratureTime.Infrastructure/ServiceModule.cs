@@ -16,8 +16,8 @@ public class ServiceModule : IServiceModule
                 System.Net.HttpStatusCode.InternalServerError,
                 "Invalid ConnectionString for redis"
             );
-        service.AddSingleton<IConnectionMultiplexer>(
-            c => ConnectionMultiplexer.Connect(connectionString)
+        service.AddSingleton<IConnectionMultiplexer>(c =>
+            ConnectionMultiplexer.Connect(connectionString)
         );
 
         service.AddTransient<Core.Interfaces.ICacheProvider, Providers.CacheProvider>();

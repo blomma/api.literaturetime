@@ -1,61 +1,26 @@
 using System.Net;
 using API.LiteratureTime.Core.Interfaces;
 using Irrbloss.Exceptions;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace API.LiteratureTime.Core.Services;
 
-public class LiteratureService(ICacheProvider cacheProvider, IMemoryCache memoryCache)
-    : ILiteratureService
+public class LiteratureService(ICacheProvider cacheProvider) : ILiteratureService
 {
-    private const string KeyPrefix = "LIT_V3";
-
-    private static string PrefixKey(string key) => $"{KeyPrefix}:{key}";
+    private static string PrefixKey(string key) => $"literature:time:{key}";
 
     public async Task<Models.LiteratureTime> GetRandomLiteratureTimeAsync(
         string hour,
         string minute
     )
     {
-        var literatureTimeHashesKey = $"{hour}:{minute}";
-        var literatureTimeHashes =
-            memoryCache.Get<List<string>?>(literatureTimeHashesKey)
-            ?? throw new ManagedResponseException(
-                HttpStatusCode.NotFound,
-                $"The specified hour:{hour} and minute:{minute} was not found"
-            );
-
-        if (literatureTimeHashes.Count == 0)
-        {
-            throw new ManagedResponseException(
-                HttpStatusCode.NotFound,
-                $"The specified hour:{hour} and minute:{minute} was not found"
-            );
-        }
-
-        var index = new Random().Next(literatureTimeHashes.Count);
-        var literatureTimeHash = literatureTimeHashes[index];
-        var literatureTimeHashKey = PrefixKey(literatureTimeHash);
+        var literatureTimeKey = PrefixKey($"{hour}:{minute}");
         var literatureTime =
-            await cacheProvider.GetAsync<Models.LiteratureTime>(literatureTimeHashKey)
+            await cacheProvider.GetRandomAsync<Models.LiteratureTime>(literatureTimeKey)
             ?? throw new ManagedResponseException(
                 HttpStatusCode.NotFound,
-                $"The specified hash:{literatureTimeHash} for hour:{hour} and minute:{minute} was not found, key:{literatureTimeHashKey}"
+                $"The specified hour:{hour} and minute:{minute} was not found"
             );
 
         return literatureTime;
-    }
-
-    public async Task<Models.LiteratureTime> GetLiteratureTimeAsync(string hash)
-    {
-        var key = PrefixKey(hash);
-        var result =
-            await cacheProvider.GetAsync<Models.LiteratureTime>(key)
-            ?? throw new ManagedResponseException(
-                HttpStatusCode.NotFound,
-                $"The specified hash:{hash} was not found, key:{key}"
-            );
-
-        return result;
     }
 }

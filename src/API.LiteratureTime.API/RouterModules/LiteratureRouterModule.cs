@@ -23,16 +23,5 @@ public class LiteratureRouterModule : IRouterModule
             )
             .AddEndpointFilter<ValidationFilter<RandomLiteratureRequest>>()
             .WithName("GetRandomLiteratureTime");
-
-        group
-            .MapGet(
-                "/{hash}",
-                (
-                    [FromServices] ILiteratureService literatureService,
-                    [AsParameters] LiteratureRequest request
-                ) => literatureService.GetLiteratureTimeAsync(request.Hash)
-            )
-            .AddEndpointFilter<ValidationFilter<LiteratureRequest>>()
-            .WithName("GetLiteratureTime");
     }
 }

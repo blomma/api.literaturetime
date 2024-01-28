@@ -6,10 +6,10 @@ namespace API.LiteratureTime.Infrastructure.Providers;
 
 public class CacheProvider(IConnectionMultiplexer connectionMultiplexer) : ICacheProvider
 {
-    public async Task<T?> GetAsync<T>(string key)
+    public async Task<T?> GetRandomAsync<T>(string key)
     {
         var db = connectionMultiplexer.GetDatabase();
-        var data = await db.StringGetAsync(key);
+        var data = await db.SetRandomMemberAsync(key);
         return data.IsNull ? default : JsonSerializer.Deserialize<T>(data.ToString());
     }
 }

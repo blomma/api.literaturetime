@@ -28,8 +28,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddServiceModules(builder.Configuration);
 builder.Services.AddRouterModules();
 
-builder.Services.AddMemoryCache();
-
 builder.Services.AddHttpLogging(logging =>
 {
     logging.RequestHeaders.Add("Referer");
