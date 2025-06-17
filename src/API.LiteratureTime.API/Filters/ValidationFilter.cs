@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace API.LiteratureTime.API.Filters;
 
-public class ValidationFilter<T>(IValidator<T> validator) : IEndpointFilter
+internal sealed class ValidationFilter<T>(IValidator<T> validator) : IEndpointFilter
     where T : class
 {
     public async ValueTask<object?> InvokeAsync(

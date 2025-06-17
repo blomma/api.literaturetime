@@ -3,7 +3,7 @@ using Irrbloss.Exceptions;
 
 namespace API.LiteratureTime.API.Filters;
 
-public class ApiExceptionFilter : IEndpointFilter
+internal sealed class ApiExceptionFilter : IEndpointFilter
 {
     public async ValueTask<object?> InvokeAsync(
         EndpointFilterInvocationContext context,
